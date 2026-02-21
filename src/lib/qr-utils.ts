@@ -2,13 +2,19 @@ import QRCode from 'qrcode';
 
 export type QRContentType = 'url' | 'text' | 'wifi' | 'email' | 'social' | 'multilink' | 'countdown';
 
-export type QRDotStyle = 'square' | 'rounded' | 'dots' | 'diamond';
+export type QRDotStyle = 'square' | 'rounded' | 'dots' | 'diamond' | 'glitch' | 'stripe';
+export type QREyeFrameStyle = 'square' | 'rounded' | 'circle' | 'leaf' | 'diamond';
+export type QREyeBallStyle = 'square' | 'rounded' | 'circle' | 'leaf' | 'diamond' | 'star';
 export type QRMaskShape = 'none' | 'circle' | 'heart' | 'star';
 
 export interface QRDesign {
   fgColor: string;
   bgColor: string;
   dotStyle: QRDotStyle;
+  eyeFrameStyle: QREyeFrameStyle;
+  eyeBallStyle: QREyeBallStyle;
+  eyeFrameColor?: string;
+  eyeBallColor?: string;
   maskShape: QRMaskShape;
   errorCorrectionLevel: 'L' | 'M' | 'Q' | 'H';
   logoUrl?: string;
@@ -30,6 +36,8 @@ export const defaultDesign: QRDesign = {
   fgColor: '#1e40af',
   bgColor: '#ffffff',
   dotStyle: 'square',
+  eyeFrameStyle: 'square',
+  eyeBallStyle: 'square',
   maskShape: 'none',
   errorCorrectionLevel: 'M',
   labelText: 'Scan Me!',
@@ -190,51 +198,167 @@ export async function generateQRCanvas(
     ctx.shadowOffsetY = 0;
   }
 
-  for (let row = 0; row < count; row++) {
-    for (let col = 0; col < count; col++) {
-      if (modules.get(row, col)) {
-        const x = col * moduleSize;
-        const y = row * moduleSize;
-        const s = moduleSize;
+  // Draw modules
+  for (let r = 0; r < count; r++) {
+    for (let c = 0; c < count; c++) {
+      if (!modules.get(r, c)) continue;
 
-        switch (design.dotStyle) {
-          case 'dots':
-            ctx.beginPath();
-            ctx.arc(x + s / 2, y + s / 2, s / 2 * 0.8, 0, Math.PI * 2);
-            ctx.fill();
-            break;
-          case 'rounded':
-            ctx.beginPath();
-            const r = s * 0.3;
-            ctx.moveTo(x + r, y);
-            ctx.lineTo(x + s - r, y);
-            ctx.quadraticCurveTo(x + s, y, x + s, y + r);
-            ctx.lineTo(x + s, y + s - r);
-            ctx.quadraticCurveTo(x + s, y + s, x + s - r, y + s);
-            ctx.lineTo(x + r, y + s);
-            ctx.quadraticCurveTo(x, y + s, x, y + s - r);
-            ctx.lineTo(x, y + r);
-            ctx.quadraticCurveTo(x, y, x + r, y);
-            ctx.fill();
-            break;
-          case 'diamond':
-            ctx.beginPath();
-            ctx.moveTo(x + s / 2, y);
-            ctx.lineTo(x + s, y + s / 2);
-            ctx.lineTo(x + s / 2, y + s);
-            ctx.lineTo(x, y + s / 2);
-            ctx.closePath();
-            ctx.fill();
-            break;
-          default: // square
-            ctx.fillRect(x, y, s, s);
-            break;
+      const s = moduleSize; // module size
+      const x = c * s;
+      const y = r * s;
+
+      // Eye Detection Logic (Finder Patterns are 7x7 at corners)
+      const isTopLeftEye = r < 7 && c < 7;
+      const isTopRightEye = r < 7 && c >= count - 7;
+      const isBottomLeftEye = r >= count - 7 && c < 7;
+
+      if (isTopLeftEye || isTopRightEye || isBottomLeftEye) {
+        let relR = r;
+        let relC = c;
+        if (isTopRightEye) relC = c - (count - 7);
+        if (isBottomLeftEye) relR = r - (count - 7);
+
+        // Only draw the COMPONENT when we hit the top-left of its area
+        // Frame: 7x7 area
+        if (relR === 0 && relC === 0) {
+          ctx.fillStyle = design.eyeFrameColor || design.fgColor;
+          drawEyePart(ctx, x, y, s * 7, design.eyeFrameStyle, true);
         }
+        // Ball: 3x3 area
+        else if (relR === 2 && relC === 2) {
+          ctx.fillStyle = design.eyeBallColor || design.fgColor;
+          drawEyePart(ctx, x, y, s * 3, design.eyeBallStyle, false);
+        }
+
+        // Skip all modules in eye area (we handled frame/ball above)
+        continue;
+      }
+
+      // Restore foreground for normal modules
+      if (design.gradientEnabled) {
+        let gradient;
+        if (design.gradientType === 'linear') {
+          gradient = ctx.createLinearGradient(0, 0, size, size);
+        } else {
+          gradient = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+        }
+        gradient.addColorStop(0, design.fgColor);
+        gradient.addColorStop(1, design.gradientColor);
+        ctx.fillStyle = gradient;
+      } else {
+        ctx.fillStyle = design.fgColor;
+      }
+
+      // Draw normal modules
+      switch (design.dotStyle) {
+        case 'dots':
+          ctx.beginPath();
+          ctx.arc(x + s / 2, y + s / 2, s / 2 * 0.8, 0, Math.PI * 2);
+          ctx.fill();
+          break;
+        case 'rounded':
+          ctx.beginPath();
+          const r_size = s * 0.4;
+          ctx.roundRect(x + 0.5, y + 0.5, s - 1, s - 1, r_size);
+          ctx.fill();
+          break;
+        case 'diamond':
+          ctx.beginPath();
+          ctx.moveTo(x + s / 2, y);
+          ctx.lineTo(x + s, y + s / 2);
+          ctx.lineTo(x + s / 2, y + s);
+          ctx.lineTo(x, y + s / 2);
+          ctx.closePath();
+          ctx.fill();
+          break;
+        case 'glitch':
+          ctx.fillRect(x, y + s * 0.2, s * 0.8, s * 0.6);
+          break;
+        case 'stripe':
+          ctx.fillRect(x + s * 0.1, y, s * 0.2, s);
+          ctx.fillRect(x + s * 0.7, y, s * 0.2, s);
+          break;
+        default: // square
+          ctx.fillRect(x, y, s, s);
+          break;
       }
     }
   }
 
   return canvas;
+}
+
+/**
+ * Helper to draw parts of the QR eyes with specific shapes
+ */
+function drawEyePart(ctx: CanvasRenderingContext2D, x: number, y: number, s: number, style: QREyeFrameStyle | QREyeBallStyle, isFrame: boolean) {
+  const r = s * 0.2;
+  const dotSize = s / (isFrame ? 7 : 3);
+
+  ctx.beginPath();
+
+  const drawShape = (ctx: CanvasRenderingContext2D, x: number, y: number, s: number, style: any) => {
+    switch (style) {
+      case 'circle':
+        ctx.arc(x + s / 2, y + s / 2, s / 2, 0, Math.PI * 2);
+        break;
+      case 'rounded':
+        ctx.roundRect(x, y, s, s, s * 0.25);
+        break;
+      case 'leaf':
+        ctx.moveTo(x + s, y);
+        ctx.quadraticCurveTo(x + s, y + s, x, y + s);
+        ctx.lineTo(x, y + s / 2);
+        ctx.quadraticCurveTo(x, y, x + s, y);
+        ctx.closePath();
+        break;
+      case 'diamond':
+        ctx.moveTo(x + s / 2, y);
+        ctx.lineTo(x + s, y + s / 2);
+        ctx.lineTo(x + s / 2, y + s);
+        ctx.lineTo(x, y + s / 2);
+        ctx.closePath();
+        break;
+      case 'star':
+        const spikes = 5;
+        const outer = s / 2;
+        const inner = s / 4;
+        let rot = Math.PI / 2 * 3;
+        let cx = x + s / 2;
+        let cy = y + s / 2;
+        let step = Math.PI / spikes;
+        ctx.moveTo(cx, cy - outer);
+        for (let i = 0; i < spikes; i++) {
+          ctx.lineTo(cx + Math.cos(rot) * outer, cy + Math.sin(rot) * outer);
+          rot += step;
+          ctx.lineTo(cx + Math.cos(rot) * inner, cy + Math.sin(rot) * inner);
+          rot += step;
+        }
+        ctx.closePath();
+        break;
+      default: // square
+        ctx.rect(x, y, s, s);
+    }
+  };
+
+  if (isFrame) {
+    // Use even-odd to create the hole (7x7 outer, 5x5 inner)
+    drawShape(ctx, x, y, s, style);
+
+    // Counter-clockwise rectangle for the hole
+    const holeSize = dotSize * 5;
+    const holeOffset = dotSize;
+    ctx.moveTo(x + holeOffset + holeSize, y + holeOffset);
+    ctx.lineTo(x + holeOffset, y + holeOffset);
+    ctx.lineTo(x + holeOffset, y + holeOffset + holeSize);
+    ctx.lineTo(x + holeOffset + holeSize, y + holeOffset + holeSize);
+    ctx.closePath();
+
+    ctx.fill('evenodd');
+  } else {
+    drawShape(ctx, x, y, s, style);
+    ctx.fill();
+  }
 }
 
 export function downloadQR(canvas: HTMLCanvasElement, format: string, design: QRDesign) {

@@ -3,281 +3,160 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Palette, Shapes, Shield, Type, Sparkles } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Palette, Shapes, Shield, Type, Sparkles, RotateCcw } from 'lucide-react';
 
 interface DesignPanelProps {
   design: QRDesign;
   updateDesign: (updates: Partial<QRDesign>) => void;
 }
 
-const presetColors = [
-  '#1e40af', '#3b82f6', '#7c3aed', '#ec4899', '#f97316',
-  '#eab308', '#10b981', '#06b6d4', '#000000', '#ffffff',
-];
-
 export default function DesignPanel({ design, updateDesign }: DesignPanelProps) {
   return (
-    <Tabs defaultValue="palette" className="w-full">
-      <TabsList className="w-full bg-secondary grid grid-cols-5 h-auto p-1">
-        <TabsTrigger value="palette" className="flex items-center gap-1.5 text-xs py-2 data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
-          <Sparkles className="w-3.5 h-3.5" /> Presets
-        </TabsTrigger>
-        <TabsTrigger value="color" className="flex items-center gap-1.5 text-xs py-2 data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
-          <Palette className="w-3.5 h-3.5" /> Color
-        </TabsTrigger>
-        <TabsTrigger value="shape" className="flex items-center gap-1.5 text-xs py-2 data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
-          <Shapes className="w-3.5 h-3.5" /> Shape
-        </TabsTrigger>
-        <TabsTrigger value="level" className="flex items-center gap-1.5 text-xs py-2 data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
-          <Shield className="w-3.5 h-3.5" /> Level
-        </TabsTrigger>
-        <TabsTrigger value="text" className="flex items-center gap-1.5 text-xs py-2 data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
-          <Type className="w-3.5 h-3.5" /> Text
-        </TabsTrigger>
+    <Tabs defaultValue="shape" className="w-full">
+      <TabsList className="bg-secondary p-1 grid grid-cols-4 gap-1 h-12">
+        <TabsTrigger value="frame" className="data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-md">Frame</TabsTrigger>
+        <TabsTrigger value="shape" className="data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-md">Shape</TabsTrigger>
+        <TabsTrigger value="logo" className="data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-md">Logo</TabsTrigger>
+        <TabsTrigger value="level" className="data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-md">Level</TabsTrigger>
       </TabsList>
 
-      {/* Palette Presets */}
-      <TabsContent value="palette" className="space-y-4 mt-4">
-        <Label className="text-muted-foreground text-sm">Color Palette Presets</Label>
-        <div className="grid grid-cols-2 gap-2">
-          {colorPalettes.map(palette => (
-            <button
-              key={palette.name}
-              onClick={() => updateDesign({ fgColor: palette.fg, bgColor: palette.bg, labelColor: palette.label })}
-              className={`flex items-center gap-3 p-3 rounded-lg border transition-all ${design.fgColor === palette.fg && design.bgColor === palette.bg
-                ? 'border-primary bg-primary/10 shadow-sm'
-                : 'border-border hover:border-muted-foreground bg-card'
-                }`}
-            >
-              <div className="flex gap-1">
-                <div className="w-5 h-5 rounded-full border border-border" style={{ backgroundColor: palette.fg }} />
-                <div className="w-5 h-5 rounded-full border border-border" style={{ backgroundColor: palette.bg }} />
-              </div>
-              <span className="text-sm font-medium text-foreground">{palette.name}</span>
-            </button>
-          ))}
+      <TabsContent value="frame" className="space-y-5 mt-6">
+        <div className="p-8 border-2 border-dashed border-border rounded-xl text-center">
+          <p className="text-muted-foreground text-sm">Frame customization options (Standard, Phone, Scan-to-pay) coming soon.</p>
         </div>
       </TabsContent>
 
-      <TabsContent value="color" className="space-y-5 mt-4">
-        <div className="space-y-3">
-          <Label className="text-muted-foreground text-sm">QR Foreground</Label>
-          <div className="flex flex-wrap gap-2">
-            {presetColors.map(color => (
-              <button
-                key={color}
-                onClick={() => updateDesign({ fgColor: color })}
-                className={`w-8 h-8 rounded-lg border-2 transition-all ${design.fgColor === color ? 'border-primary scale-110 shadow-md' : 'border-border hover:border-muted-foreground'
-                  }`}
-                style={{ backgroundColor: color }}
-              />
-            ))}
-          </div>
-          <div className="flex items-center gap-2">
-            <input
-              type="color"
-              value={design.fgColor}
-              onChange={e => updateDesign({ fgColor: e.target.value })}
-              className="w-10 h-10 rounded-lg cursor-pointer bg-transparent border-0"
-            />
-            <Input
-              value={design.fgColor}
-              onChange={e => updateDesign({ fgColor: e.target.value })}
-              className="bg-secondary border-border font-mono text-sm"
-            />
-          </div>
-        </div>
-
-        {/* Gradient Section */}
-        <div className="space-y-4 pt-2 border-t border-border/50">
-          <div className="flex items-center justify-between">
-            <Label className="text-muted-foreground text-sm">Gradient Fill</Label>
-            <Switch
-              checked={design.gradientEnabled}
-              onCheckedChange={v => updateDesign({ gradientEnabled: v })}
-            />
-          </div>
-          {design.gradientEnabled && (
-            <div className="space-y-3 pl-4 border-l-2 border-primary/30">
-              <Label className="text-muted-foreground text-xs uppercase tracking-wider">Secondary Color</Label>
-              <div className="flex items-center gap-2">
-                <input
-                  type="color"
-                  value={design.gradientColor}
-                  onChange={e => updateDesign({ gradientColor: e.target.value })}
-                  className="w-8 h-8 rounded-lg cursor-pointer bg-transparent border-0"
-                />
-                <Input
-                  value={design.gradientColor}
-                  onChange={e => updateDesign({ gradientColor: e.target.value })}
-                  className="bg-secondary border-border font-mono text-xs h-8"
-                />
-              </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => updateDesign({ gradientType: 'linear' })}
-                  className={`flex-1 py-1 px-2 rounded text-xs transition-all ${design.gradientType === 'linear' ? 'bg-primary/20 text-primary border border-primary/40' : 'bg-secondary text-muted-foreground'}`}
-                >
-                  Linear
-                </button>
-                <button
-                  onClick={() => updateDesign({ gradientType: 'radial' })}
-                  className={`flex-1 py-1 px-2 rounded text-xs transition-all ${design.gradientType === 'radial' ? 'bg-primary/20 text-primary border border-primary/40' : 'bg-secondary text-muted-foreground'}`}
-                >
-                  Radial
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="space-y-3 pt-2 border-t border-border/50">
-          <Label className="text-muted-foreground text-sm">Background Color</Label>
-          <div className="flex items-center gap-2">
-            <input
-              type="color"
-              value={design.bgColor}
-              onChange={e => updateDesign({ bgColor: e.target.value })}
-              className="w-10 h-10 rounded-lg cursor-pointer bg-transparent border-0"
-            />
-            <Input
-              value={design.bgColor}
-              onChange={e => updateDesign({ bgColor: e.target.value })}
-              className="bg-secondary border-border font-mono text-sm"
-            />
-          </div>
-        </div>
-      </TabsContent>
-
-      <TabsContent value="shape" className="space-y-5 mt-4">
-        <div className="space-y-3">
-          <Label className="text-muted-foreground text-sm">Module Style</Label>
-          <div className="grid grid-cols-2 gap-2">
-            {(['square', 'rounded', 'dots', 'diamond'] as const).map(style => (
+      <TabsContent value="shape" className="space-y-6 mt-6">
+        <div className="space-y-4">
+          <Label className="text-sm font-bold">Shape style</Label>
+          <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+            {(['square', 'rounded', 'dots', 'diamond', 'glitch', 'stripe'] as const).map(style => (
               <button
                 key={style}
                 onClick={() => updateDesign({ dotStyle: style })}
-                className={`p-3 rounded-lg text-sm font-medium capitalize transition-all border ${design.dotStyle === style
-                  ? 'bg-primary/20 text-primary border-primary/40 shadow-inner'
-                  : 'bg-secondary text-muted-foreground border-transparent hover:border-border'
+                className={`aspect-square rounded-lg border-2 flex items-center justify-center p-2 transition-all ${design.dotStyle === style ? 'border-primary ring-2 ring-primary/20 bg-primary/5' : 'border-secondary hover:border-muted-foreground'
                   }`}
               >
-                {style}
+                <div className="w-full h-full bg-foreground rounded-sm" style={{
+                  clipPath: style === 'dots' ? 'circle(50%)' :
+                    style === 'diamond' ? 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' :
+                      style === 'rounded' ? 'inset(0 round 20%)' : 'none'
+                }} />
+              </button>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+            <div className="space-y-2">
+              <Label className="text-xs text-muted-foreground">Border colour</Label>
+              <div className="flex items-center gap-2 bg-secondary/30 p-2 rounded-lg border border-border">
+                <input type="color" className="w-8 h-8 p-0 border-0 bg-transparent cursor-pointer" value={design.fgColor} onChange={e => updateDesign({ fgColor: e.target.value })} />
+                <span className="text-xs font-mono">{design.fgColor}</span>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-xs text-muted-foreground">Background colour</Label>
+              <div className="flex items-center gap-2 bg-secondary/30 p-2 rounded-lg border border-border">
+                <input type="color" className="w-8 h-8 p-0 border-0 bg-transparent cursor-pointer" value={design.bgColor} onChange={e => updateDesign({ bgColor: e.target.value })} />
+                <span className="text-xs font-mono">{design.bgColor}</span>
+                <Button variant="ghost" size="sm" className="ml-auto h-7 text-[10px] gap-1 px-2" onClick={() => updateDesign({ fgColor: design.bgColor, bgColor: design.fgColor })}>
+                  <RotateCcw className="w-3 h-3" /> Invert
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-4 pt-4 border-t border-border">
+          <Label className="text-sm font-bold">Border style</Label>
+          <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+            {(['square', 'rounded', 'circle', 'leaf', 'diamond'] as const).map(style => (
+              <button
+                key={style}
+                onClick={() => updateDesign({ eyeFrameStyle: style })}
+                className={`aspect-square rounded-lg border-2 flex items-center justify-center p-2 transition-all ${design.eyeFrameStyle === style ? 'border-primary ring-2 ring-primary/20 bg-primary/5' : 'border-secondary hover:border-muted-foreground'
+                  }`}
+              >
+                <div className="w-full h-full border-2 border-foreground bg-transparent" style={{
+                  borderRadius: style === 'circle' ? '50%' :
+                    style === 'rounded' ? '25%' :
+                      style === 'leaf' ? '0 50% 0 50%' : '0'
+                }} />
               </button>
             ))}
           </div>
         </div>
 
-        {/* Effects Section */}
-        <div className="space-y-4 pt-2 border-t border-border/50">
-          <div className="space-y-3">
-            <Label className="text-sm font-medium">Clipping Mask</Label>
-            <div className="grid grid-cols-4 gap-2">
-              {(['none', 'circle', 'heart', 'star'] as const).map(shape => (
-                <button
-                  key={shape}
-                  onClick={() => updateDesign({ maskShape: shape })}
-                  className={`p-2 rounded-lg text-[10px] font-medium capitalize transition-all border ${design.maskShape === shape
-                      ? 'bg-primary/20 text-primary border-primary/40 shadow-inner'
-                      : 'bg-secondary text-muted-foreground border-transparent hover:border-border'
-                    }`}
-                >
-                  {shape}
-                </button>
-              ))}
-            </div>
+        <div className="space-y-4 pt-4 border-t border-border">
+          <Label className="text-sm font-bold">Center style</Label>
+          <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+            {(['square', 'rounded', 'circle', 'leaf', 'diamond', 'star'] as const).map(style => (
+              <button
+                key={style}
+                onClick={() => updateDesign({ eyeBallStyle: style })}
+                className={`aspect-square rounded-lg border-2 flex items-center justify-center p-2 transition-all ${design.eyeBallStyle === style ? 'border-primary ring-2 ring-primary/20 bg-primary/5' : 'border-secondary hover:border-muted-foreground'
+                  }`}
+              >
+                <div className="w-full h-full bg-foreground" style={{
+                  borderRadius: style === 'circle' ? '50%' :
+                    style === 'rounded' ? '25%' :
+                      style === 'leaf' ? '0 50% 0 50%' : '0'
+                }} />
+              </button>
+            ))}
           </div>
 
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label className="text-sm font-medium">Shadow Effect</Label>
-              <p className="text-[10px] text-muted-foreground">Adds depth to modules</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+            <div className="space-y-2">
+              <Label className="text-xs text-muted-foreground">Eye Frame Color</Label>
+              <div className="flex items-center gap-2 bg-secondary/30 p-2 rounded-lg border border-border">
+                <input type="color" className="w-8 h-8 p-0 border-0 bg-transparent cursor-pointer" value={design.eyeFrameColor || design.fgColor} onChange={e => updateDesign({ eyeFrameColor: e.target.value })} />
+                <span className="text-xs font-mono">{design.eyeFrameColor || design.fgColor}</span>
+              </div>
             </div>
-            <Switch
-              checked={design.shadowEnabled}
-              onCheckedChange={v => updateDesign({ shadowEnabled: v, glowEnabled: v ? false : design.glowEnabled })}
-            />
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label className="text-sm font-medium">Glow Effect</Label>
-              <p className="text-[10px] text-muted-foreground">Outer luminescence</p>
+            <div className="space-y-2">
+              <Label className="text-xs text-muted-foreground">Eye Ball Color</Label>
+              <div className="flex items-center gap-2 bg-secondary/30 p-2 rounded-lg border border-border">
+                <input type="color" className="w-8 h-8 p-0 border-0 bg-transparent cursor-pointer" value={design.eyeBallColor || design.fgColor} onChange={e => updateDesign({ eyeBallColor: e.target.value })} />
+                <span className="text-xs font-mono">{design.eyeBallColor || design.fgColor}</span>
+              </div>
             </div>
-            <Switch
-              checked={design.glowEnabled}
-              onCheckedChange={v => updateDesign({ glowEnabled: v, shadowEnabled: v ? false : design.shadowEnabled })}
-            />
           </div>
         </div>
       </TabsContent>
 
-      <TabsContent value="level" className="space-y-5 mt-4">
-        <div className="space-y-3">
-          <Label className="text-muted-foreground text-sm">Error Correction Level</Label>
-          <div className="grid grid-cols-2 gap-2">
+      <TabsContent value="logo" className="space-y-5 mt-6">
+        <div className="p-8 border-2 border-dashed border-border rounded-xl text-center">
+          <p className="text-muted-foreground text-sm">Logo upload and placement coming soon.</p>
+        </div>
+      </TabsContent>
+
+      <TabsContent value="level" className="space-y-6 mt-6">
+        <div className="space-y-4">
+          <Label className="text-sm font-bold">Error Correction Level</Label>
+          <div className="grid grid-cols-2 gap-3">
             {([
-              { level: 'L' as const, desc: '7% recovery' },
-              { level: 'M' as const, desc: '15% recovery' },
-              { level: 'Q' as const, desc: '25% recovery' },
-              { level: 'H' as const, desc: '30% recovery' },
-            ]).map(({ level, desc }) => (
+              { level: 'L' as const, desc: '7% recovery', label: 'Low' },
+              { level: 'M' as const, desc: '15% recovery', label: 'Medium' },
+              { level: 'Q' as const, desc: '25% recovery', label: 'Quartile' },
+              { level: 'H' as const, desc: '30% recovery', label: 'High' },
+            ]).map(({ level, desc, label }) => (
               <button
                 key={level}
                 onClick={() => updateDesign({ errorCorrectionLevel: level })}
-                className={`p-3 rounded-lg text-left transition-all ${design.errorCorrectionLevel === level
-                  ? 'bg-primary/20 text-primary glow-border'
-                  : 'bg-secondary text-muted-foreground hover:bg-surface-hover'
+                className={`p-4 rounded-xl text-left transition-all border-2 ${design.errorCorrectionLevel === level ? 'border-primary bg-primary/5 ring-2 ring-primary/10' : 'border-secondary hover:border-muted-foreground'
                   }`}
               >
-                <div className="font-semibold text-sm">Level {level}</div>
-                <div className="text-xs opacity-70">{desc}</div>
+                <div className="font-bold text-sm">Level {level} ({label})</div>
+                <div className="text-[10px] text-muted-foreground mt-1">{desc}</div>
               </button>
             ))}
           </div>
-          <p className="text-xs text-muted-foreground">
-            Higher levels allow more damage before the QR becomes unreadable. Use H if adding a logo.
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            Higher correction levels ensure scannability even with damage or logos, but increase code density.
           </p>
         </div>
-      </TabsContent>
-
-      <TabsContent value="text" className="space-y-5 mt-4">
-        <div className="flex items-center justify-between">
-          <Label className="text-muted-foreground text-sm">Show Label</Label>
-          <Switch
-            checked={design.showLabel}
-            onCheckedChange={v => updateDesign({ showLabel: v })}
-          />
-        </div>
-        {design.showLabel && (
-          <>
-            <div className="space-y-2">
-              <Label className="text-muted-foreground text-sm">Label Text</Label>
-              <Input
-                value={design.labelText}
-                onChange={e => updateDesign({ labelText: e.target.value })}
-                placeholder="Scan Me!"
-                className="bg-secondary border-border focus:border-primary"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label className="text-muted-foreground text-sm">Label Color</Label>
-              <div className="flex items-center gap-2">
-                <input
-                  type="color"
-                  value={design.labelColor}
-                  onChange={e => updateDesign({ labelColor: e.target.value })}
-                  className="w-10 h-10 rounded-lg cursor-pointer bg-transparent border-0"
-                />
-                <Input
-                  value={design.labelColor}
-                  onChange={e => updateDesign({ labelColor: e.target.value })}
-                  className="bg-secondary border-border font-mono text-sm"
-                />
-              </div>
-            </div>
-          </>
-        )}
       </TabsContent>
     </Tabs>
   );

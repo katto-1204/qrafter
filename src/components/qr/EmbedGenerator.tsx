@@ -40,11 +40,10 @@ export default function EmbedGenerator({ previewUrl }: EmbedGeneratorProps) {
                         Copy this snippet to embed your custom QR code on any website or blog.
                     </p>
                     <div className="relative group">
-                        <pre className="p-4 bg-secondary rounded-lg text-xs font-mono overflow-x-auto whitespace-pre-wrap leading-relaxed border border-border">
+                        <pre className="p-4 bg-secondary rounded-lg text-[10px] font-mono overflow-x-auto whitespace-pre-wrap break-all leading-relaxed border border-border max-h-[120px] overflow-y-auto">
                             {embedCode}
                         </pre>
                         <Button
-                            size="icon"
                             variant="secondary"
                             className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
                             onClick={handleCopy}
@@ -52,9 +51,12 @@ export default function EmbedGenerator({ previewUrl }: EmbedGeneratorProps) {
                             {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
                         </Button>
                     </div>
-                    <div className="p-4 border border-primary/20 bg-primary/5 rounded-lg">
+                    <div className="p-4 border border-primary/20 bg-primary/5 rounded-lg overflow-hidden">
                         <h4 className="text-xs font-bold uppercase tracking-wider mb-2">Live Preview</h4>
-                        <div dangerouslySetInnerHTML={{ __html: embedCode }} className="flex justify-center" />
+                        <div
+                            dangerouslySetInnerHTML={{ __html: embedCode }}
+                            className="flex justify-center max-h-[300px] overflow-auto"
+                        />
                     </div>
                 </div>
             </DialogContent>
