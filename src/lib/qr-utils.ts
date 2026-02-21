@@ -6,7 +6,7 @@ export type QRDotStyle = 'square' | 'rounded' | 'dots' | 'diamond' | 'glitch' | 
 export type QREyeFrameStyle = 'square' | 'rounded' | 'circle' | 'leaf' | 'diamond';
 export type QREyeBallStyle = 'square' | 'rounded' | 'circle' | 'leaf' | 'diamond' | 'star';
 export type QRMaskShape = 'none' | 'circle' | 'heart' | 'star';
-export type QRFrameStyle = 'none' | 'simple' | 'rounded' | 'badge' | 'phone' | 'circle';
+export type QRFrameStyle = 'none' | 'simple' | 'rounded' | 'badge' | 'phone' | 'circle' | 'business' | 'social' | 'scan' | 'gift';
 
 export interface QRDesign {
   fgColor: string;
@@ -27,6 +27,7 @@ export interface QRDesign {
   frameStyle: QRFrameStyle;
   frameColor: string;
   frameText: string;
+  frameAccentColor: string;
   // Gradient options
   gradientEnabled: boolean;
   gradientColor: string;
@@ -55,6 +56,7 @@ export const defaultDesign: QRDesign = {
   frameStyle: 'none',
   frameColor: '#000000',
   frameText: 'SCAN ME',
+  frameAccentColor: '#ef4444',
   // Gradient defaults
   gradientEnabled: false,
   gradientColor: '#ef4444',
@@ -119,66 +121,265 @@ function drawFrame(
   design: QRDesign
 ) {
   const frameColor = design.frameColor;
+  const accentColor = design.frameAccentColor;
   
   switch (design.frameStyle) {
     case 'simple':
-      // Simple border frame
+      // Simple border with shadow effect
       ctx.fillStyle = frameColor;
       ctx.fillRect(0, 0, width, height);
+      // Add subtle inner border
+      ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(10, 10, width - 20, height - 20);
       break;
       
     case 'rounded':
-      // Rounded corner frame
-      ctx.fillStyle = frameColor;
+      // Enhanced rounded frame with gradient border
+      const gradient = ctx.createLinearGradient(0, 0, width, height);
+      gradient.addColorStop(0, frameColor);
+      gradient.addColorStop(1, accentColor);
+      ctx.fillStyle = gradient;
       ctx.beginPath();
       ctx.roundRect(0, 0, width, height, 30);
       ctx.fill();
+      
+      // Inner highlight
+      ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.roundRect(5, 5, width - 10, height - 10, 25);
+      ctx.stroke();
       break;
       
     case 'badge':
-      // Badge style with text area at bottom
-      ctx.fillStyle = frameColor;
+      // Modern badge with gradient and shadow
+      const badgeGradient = ctx.createLinearGradient(0, 0, 0, height);
+      badgeGradient.addColorStop(0, frameColor);
+      badgeGradient.addColorStop(1, accentColor);
+      ctx.fillStyle = badgeGradient;
       ctx.beginPath();
-      ctx.roundRect(0, 0, width, height, 20);
+      ctx.roundRect(0, 0, width, height, 25);
       ctx.fill();
+      
+      // Add decorative elements
+      ctx.fillStyle = 'rgba(255,255,255,0.1)';
+      ctx.beginPath();
+      ctx.arc(width * 0.8, height * 0.2, 20, 0, Math.PI * 2);
+      ctx.fill();
+      
+      ctx.beginPath();
+      ctx.arc(width * 0.2, height * 0.8, 15, 0, Math.PI * 2);
+      ctx.fill();
+      
       // Add text if provided
       if (design.frameText) {
         ctx.fillStyle = design.bgColor;
         ctx.font = `bold ${width / 12}px 'Inter', sans-serif`;
         ctx.textAlign = 'center';
-        ctx.fillText(design.frameText, width / 2, height - 15);
+        ctx.fillText(design.frameText, width / 2, height - 20);
       }
       break;
       
     case 'phone':
-      // Phone mockup style
-      ctx.fillStyle = frameColor;
+      // Enhanced phone mockup with realistic details
+      // Main phone body
+      const phoneGradient = ctx.createLinearGradient(0, 0, width, 0);
+      phoneGradient.addColorStop(0, frameColor);
+      phoneGradient.addColorStop(1, accentColor);
+      ctx.fillStyle = phoneGradient;
       ctx.beginPath();
-      ctx.roundRect(0, 0, width, height, 40);
+      ctx.roundRect(0, 0, width, height, 45);
       ctx.fill();
-      // Inner bezel
-      ctx.fillStyle = '#1a1a1a';
+      
+      // Inner screen area
+      ctx.fillStyle = '#0f172a';
       ctx.beginPath();
-      ctx.roundRect(10, 10, width - 20, height - 20, 30);
+      ctx.roundRect(15, 40, width - 30, height - 80, 25);
       ctx.fill();
-      // Notch
-      ctx.fillStyle = frameColor;
+      
+      // Camera notch
+      ctx.fillStyle = '#334155';
       ctx.beginPath();
-      ctx.roundRect(width / 2 - 40, 15, 80, 25, 10);
+      ctx.roundRect(width / 2 - 50, 15, 100, 20, 10);
+      ctx.fill();
+      
+      // Camera dots
+      ctx.fillStyle = '#94a3b8';
+      ctx.beginPath();
+      ctx.arc(width / 2 - 25, 25, 4, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(width / 2 + 25, 25, 4, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Home indicator
+      ctx.fillStyle = 'rgba(255,255,255,0.8)';
+      ctx.beginPath();
+      ctx.roundRect(width / 2 - 40, height - 25, 80, 5, 2.5);
       ctx.fill();
       break;
       
     case 'circle':
-      // Circular frame
-      ctx.fillStyle = frameColor;
+      // Circular frame with decorative elements
+      const circleGradient = ctx.createRadialGradient(width/2, height/2, 0, width/2, height/2, width/2);
+      circleGradient.addColorStop(0, frameColor);
+      circleGradient.addColorStop(1, accentColor);
+      ctx.fillStyle = circleGradient;
       ctx.beginPath();
-      ctx.arc(width / 2, width / 2, width / 2, 0, Math.PI * 2);
+      ctx.arc(width / 2, height / 2, width / 2, 0, Math.PI * 2);
       ctx.fill();
+      
+      // Decorative rings
+      ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(width / 2, height / 2, width / 2 - 20, 0, Math.PI * 2);
+      ctx.stroke();
+      
+      // Add text if provided
       if (design.frameText) {
         ctx.fillStyle = design.bgColor;
         ctx.font = `bold ${width / 14}px 'Inter', sans-serif`;
         ctx.textAlign = 'center';
+        ctx.fillText(design.frameText, width / 2, height - 30);
+      }
+      break;
+      
+    case 'business':
+      // Professional business card style
+      ctx.fillStyle = frameColor;
+      ctx.fillRect(0, 0, width, height);
+      
+      // Add business card elements
+      ctx.fillStyle = accentColor;
+      ctx.fillRect(0, 0, width, 40); // Header bar
+      
+      // Decorative lines
+      ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i < 3; i++) {
+        ctx.beginPath();
+        ctx.moveTo(20, 70 + i * 25);
+        ctx.lineTo(width - 20, 70 + i * 25);
+        ctx.stroke();
+      }
+      
+      // Add text
+      if (design.frameText) {
+        ctx.fillStyle = design.bgColor;
+        ctx.font = `bold ${width / 16}px 'Inter', sans-serif`;
+        ctx.textAlign = 'center';
         ctx.fillText(design.frameText, width / 2, height - 20);
+      }
+      break;
+      
+    case 'social':
+      // Social media style with share elements
+      const socialGradient = ctx.createLinearGradient(0, 0, width, height);
+      socialGradient.addColorStop(0, '#3b82f6');
+      socialGradient.addColorStop(0.5, '#8b5cf6');
+      socialGradient.addColorStop(1, '#ec4899');
+      ctx.fillStyle = socialGradient;
+      ctx.beginPath();
+      ctx.roundRect(0, 0, width, height, 30);
+      ctx.fill();
+      
+      // Add social icons pattern
+      ctx.fillStyle = 'rgba(255,255,255,0.15)';
+      for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
+          if ((i + j) % 3 === 0) {
+            ctx.beginPath();
+            ctx.arc(20 + i * 30, 20 + j * 30, 3, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+      }
+      
+      // Add text
+      if (design.frameText) {
+        ctx.fillStyle = design.bgColor;
+        ctx.font = `bold ${width / 13}px 'Inter', sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.fillText(design.frameText, width / 2, height - 25);
+      }
+      break;
+      
+    case 'scan':
+      // Scan-to-pay style with target elements
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(0, 0, width, height);
+      
+      // Add scan target corners
+      ctx.strokeStyle = '#10b981';
+      ctx.lineWidth = 4;
+      const cornerSize = 25;
+      
+      // Top-left corner
+      ctx.beginPath();
+      ctx.moveTo(20, 20 + cornerSize);
+      ctx.lineTo(20, 20);
+      ctx.lineTo(20 + cornerSize, 20);
+      ctx.stroke();
+      
+      // Top-right corner
+      ctx.beginPath();
+      ctx.moveTo(width - 20, 20 + cornerSize);
+      ctx.lineTo(width - 20, 20);
+      ctx.lineTo(width - 20 - cornerSize, 20);
+      ctx.stroke();
+      
+      // Bottom-left corner
+      ctx.beginPath();
+      ctx.moveTo(20, height - 20 - cornerSize);
+      ctx.lineTo(20, height - 20);
+      ctx.lineTo(20 + cornerSize, height - 20);
+      ctx.stroke();
+      
+      // Bottom-right corner
+      ctx.beginPath();
+      ctx.moveTo(width - 20, height - 20 - cornerSize);
+      ctx.lineTo(width - 20, height - 20);
+      ctx.lineTo(width - 20 - cornerSize, height - 20);
+      ctx.stroke();
+      
+      // Add text
+      if (design.frameText) {
+        ctx.fillStyle = '#10b981';
+        ctx.font = `bold ${width / 15}px 'Inter', sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.fillText(design.frameText, width / 2, height - 20);
+      }
+      break;
+      
+    case 'gift':
+      // Gift/present style with festive elements
+      const giftGradient = ctx.createLinearGradient(0, 0, 0, height);
+      giftGradient.addColorStop(0, '#dc2626');
+      giftGradient.addColorStop(1, '#ea580c');
+      ctx.fillStyle = giftGradient;
+      ctx.beginPath();
+      ctx.roundRect(0, 0, width, height, 25);
+      ctx.fill();
+      
+      // Add ribbon
+      ctx.fillStyle = '#fbbf24';
+      ctx.fillRect(width/2 - 15, 0, 30, height); // Vertical ribbon
+      ctx.fillRect(0, height/2 - 15, width, 30); // Horizontal ribbon
+      
+      // Add bow details
+      ctx.fillStyle = '#f59e0b';
+      ctx.beginPath();
+      ctx.arc(width/2, height/2 - 20, 8, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Add text
+      if (design.frameText) {
+        ctx.fillStyle = design.bgColor;
+        ctx.font = `bold ${width / 14}px 'Inter', sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.fillText(design.frameText, width / 2, height - 25);
       }
       break;
       

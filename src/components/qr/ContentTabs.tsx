@@ -37,7 +37,7 @@ export default function ContentTabs({ contentType, setContentType, setContent }:
 
   // Multilink state
   const [multiLinks, setMultiLinks] = useState<{ title: string; url: string }[]>([
-    { title: 'My Portfolio', url: 'https://' }
+    { title: 'My Website', url: 'https://' }
   ]);
   const [multiName, setMultiName] = useState('My Links');
 
@@ -90,6 +90,12 @@ export default function ContentTabs({ contentType, setContentType, setContent }:
 
   const updateLink = (index: number, updates: { title?: string; url?: string }) => {
     const fresh = [...multiLinks];
+    if (updates.url) {
+      // Auto-add https:// if not present and doesn't start with www
+      if (!updates.url.startsWith('http') && !updates.url.startsWith('www') && updates.url.trim() !== '') {
+        updates.url = `https://${updates.url}`;
+      }
+    }
     fresh[index] = { ...fresh[index], ...updates };
     setMultiLinks(fresh);
   };
@@ -301,13 +307,13 @@ export default function ContentTabs({ contentType, setContentType, setContent }:
                       <Input
                         value={link.title}
                         onChange={e => updateLink(i, { title: e.target.value })}
-                        placeholder="Link Title (e.g. Portfolio)"
+                        placeholder="Link Title (e.g. Portfolio, Blog, Shop)"
                         className="bg-white border-slate-200 h-10 font-medium rounded-lg"
                       />
                       <Input
                         value={link.url}
                         onChange={e => updateLink(i, { url: e.target.value })}
-                        placeholder="https://..."
+                        placeholder="https://example.com or www.example.com"
                         className="bg-white border-slate-200 h-9 text-sm text-muted-foreground rounded-lg"
                       />
                       {multiLinks.length > 1 && (

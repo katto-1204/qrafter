@@ -40,6 +40,10 @@ export default function DesignPanel({ design, updateDesign }: DesignPanelProps) 
     { id: 'badge', label: 'Badge', icon: RectangleHorizontal },
     { id: 'phone', label: 'Phone', icon: Smartphone },
     { id: 'circle', label: 'Circle', icon: Circle },
+    { id: 'business', label: 'Business', icon: RectangleHorizontal },
+    { id: 'social', label: 'Social', icon: RectangleHorizontal },
+    { id: 'scan', label: 'Scan Pay', icon: RectangleHorizontal },
+    { id: 'gift', label: 'Gift', icon: RectangleHorizontal },
   ];
 
   return (
@@ -114,7 +118,7 @@ export default function DesignPanel({ design, updateDesign }: DesignPanelProps) 
             animate={{ opacity: 1, y: 0 }}
             className="space-y-4 pt-6 border-t border-slate-100"
           >
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="space-y-3">
                 <Label className="text-xs font-medium text-muted-foreground">Frame Color</Label>
                 <div className="flex items-center gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
@@ -125,6 +129,18 @@ export default function DesignPanel({ design, updateDesign }: DesignPanelProps) 
                     onChange={e => updateDesign({ frameColor: e.target.value })}
                   />
                   <span className="text-sm font-mono text-muted-foreground">{design.frameColor}</span>
+                </div>
+              </div>
+              <div className="space-y-3">
+                <Label className="text-xs font-medium text-muted-foreground">Accent Color</Label>
+                <div className="flex items-center gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                  <input
+                    type="color"
+                    className="w-10 h-10 p-0 border-0 rounded-lg cursor-pointer overflow-hidden"
+                    value={design.frameAccentColor}
+                    onChange={e => updateDesign({ frameAccentColor: e.target.value })}
+                  />
+                  <span className="text-sm font-mono text-muted-foreground">{design.frameAccentColor}</span>
                 </div>
               </div>
               <div className="space-y-3">

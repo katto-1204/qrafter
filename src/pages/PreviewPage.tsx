@@ -140,7 +140,7 @@ export default function PreviewPage() {
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ delay: 0.2 + i * 0.1 }}
-                                href={link.url.startsWith('http') ? link.url : `https://${link.url}`}
+                                href={link.url.startsWith('http') ? link.url : link.url.startsWith('www') ? `https://${link.url}` : `https://${link.url}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="block"
