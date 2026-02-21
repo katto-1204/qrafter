@@ -8,13 +8,16 @@ import { Slider } from '@/components/ui/slider';
 import { Palette, Shapes, Shield, Type, Sparkles, RotateCcw, Frame, Image, CheckCircle2, Info, Upload, Trash2, Smartphone, Circle, Square, RectangleHorizontal } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useRef, useState } from 'react';
+import { toast } from '@/hooks/use-toast';
 
 interface DesignPanelProps {
   design: QRDesign;
   updateDesign: (updates: Partial<QRDesign>) => void;
+  validateContent?: (content: string) => boolean;
+  content?: string;
 }
 
-export default function DesignPanel({ design, updateDesign }: DesignPanelProps) {
+export default function DesignPanel({ design, updateDesign, validateContent, content }: DesignPanelProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,6 +34,19 @@ export default function DesignPanel({ design, updateDesign }: DesignPanelProps) 
   const removeLogo = () => {
     updateDesign({ logoUrl: undefined });
     if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const handleDesignUpdate = (updates: Partial<QRDesign>) => {
+    // Check if content is valid before updating design
+    if (content && validateContent && !validateContent(content)) {
+      toast({
+        title: "⚠️ Link Required",
+        description: "Please enter a link or content first before changing design elements.",
+        variant: "destructive",
+      });
+      return;
+    }
+    updateDesign(updates);
   };
 
   const frameStyles: { id: QRFrameStyle; label: string; icon: React.ElementType }[] = [
@@ -93,7 +109,7 @@ export default function DesignPanel({ design, updateDesign }: DesignPanelProps) 
             {frameStyles.map(({ id, label, icon: Icon }) => (
               <button
                 key={id}
-                onClick={() => updateDesign({ frameStyle: id })}
+                onClick={() => handleDesignUpdate({ frameStyle: id })}
                 className={`relative aspect-square rounded-xl border-2 flex flex-col items-center justify-center p-2 transition-all duration-200 group ${
                   design.frameStyle === id
                     ? 'border-primary bg-primary/5 shadow-soft'
@@ -126,7 +142,7 @@ export default function DesignPanel({ design, updateDesign }: DesignPanelProps) 
                     type="color"
                     className="w-10 h-10 p-0 border-0 rounded-lg cursor-pointer overflow-hidden"
                     value={design.frameColor}
-                    onChange={e => updateDesign({ frameColor: e.target.value })}
+                    onChange={e => handleDesignUpdate({ frameColor: e.target.value })}
                   />
                   <span className="text-sm font-mono text-muted-foreground">{design.frameColor}</span>
                 </div>
@@ -138,7 +154,7 @@ export default function DesignPanel({ design, updateDesign }: DesignPanelProps) 
                     type="color"
                     className="w-10 h-10 p-0 border-0 rounded-lg cursor-pointer overflow-hidden"
                     value={design.frameAccentColor}
-                    onChange={e => updateDesign({ frameAccentColor: e.target.value })}
+                    onChange={e => handleDesignUpdate({ frameAccentColor: e.target.value })}
                   />
                   <span className="text-sm font-mono text-muted-foreground">{design.frameAccentColor}</span>
                 </div>
@@ -147,7 +163,7 @@ export default function DesignPanel({ design, updateDesign }: DesignPanelProps) 
                 <Label className="text-xs font-medium text-muted-foreground">Frame Text</Label>
                 <Input
                   value={design.frameText}
-                  onChange={e => updateDesign({ frameText: e.target.value })}
+                  onChange={e => handleDesignUpdate({ frameText: e.target.value })}
                   placeholder="SCAN ME"
                   className="h-12 bg-slate-50 border-slate-200 rounded-xl"
                 />
@@ -171,7 +187,7 @@ export default function DesignPanel({ design, updateDesign }: DesignPanelProps) 
             {(['square', 'rounded', 'dots', 'diamond', 'glitch', 'stripe'] as const).map(style => (
               <button
                 key={style}
-                onClick={() => updateDesign({ dotStyle: style })}
+                onClick={() => handleDesignUpdate({ dotStyle: style })}
                 className={`relative aspect-square rounded-xl border-2 flex items-center justify-center p-3 transition-all duration-200 group ${
                   design.dotStyle === style 
                     ? 'border-primary bg-primary/5 shadow-soft' 
@@ -201,7 +217,7 @@ export default function DesignPanel({ design, updateDesign }: DesignPanelProps) 
                     type="color" 
                     className="w-10 h-10 p-0 border-0 rounded-lg cursor-pointer overflow-hidden" 
                     value={design.fgColor} 
-                    onChange={e => updateDesign({ fgColor: e.target.value })} 
+                    onChange={e => handleDesignUpdate({ fgColor: e.target.value })} 
                   />
                 </div>
                 <span className="text-sm font-mono text-muted-foreground flex-1">{design.fgColor}</span>
@@ -215,7 +231,7 @@ export default function DesignPanel({ design, updateDesign }: DesignPanelProps) 
                     type="color" 
                     className="w-10 h-10 p-0 border-0 rounded-lg cursor-pointer overflow-hidden" 
                     value={design.bgColor} 
-                    onChange={e => updateDesign({ bgColor: e.target.value })} 
+                    onChange={e => handleDesignUpdate({ bgColor: e.target.value })} 
                   />
                 </div>
                 <span className="text-sm font-mono text-muted-foreground flex-1">{design.bgColor}</span>
@@ -223,7 +239,7 @@ export default function DesignPanel({ design, updateDesign }: DesignPanelProps) 
                   variant="ghost" 
                   size="sm" 
                   className="h-8 text-xs gap-1.5 px-2 hover:bg-white" 
-                  onClick={() => updateDesign({ fgColor: design.bgColor, bgColor: design.fgColor })}
+                  onClick={() => handleDesignUpdate({ fgColor: design.bgColor, bgColor: design.fgColor })}
                 >
                   <RotateCcw className="w-3 h-3" /> Swap
                 </Button>
@@ -245,7 +261,7 @@ export default function DesignPanel({ design, updateDesign }: DesignPanelProps) 
               </Label>
               <Switch
                 checked={design.gradientEnabled}
-                onCheckedChange={v => updateDesign({ gradientEnabled: v })}
+                onCheckedChange={v => handleDesignUpdate({ gradientEnabled: v })}
               />
             </div>
             
@@ -256,7 +272,7 @@ export default function DesignPanel({ design, updateDesign }: DesignPanelProps) 
                     <Label className="text-xs font-medium text-muted-foreground">Gradient Type</Label>
                     <div className="flex rounded-xl border border-slate-200 bg-slate-50 p-1">
                       <button
-                        onClick={() => updateDesign({ gradientType: 'linear' })}
+                        onClick={() => handleDesignUpdate({ gradientType: 'linear' })}
                         className={`flex-1 py-2 px-3 rounded-lg text-xs font-medium transition-all ${
                           design.gradientType === 'linear'
                             ? 'bg-white text-foreground shadow-sm'
@@ -266,7 +282,7 @@ export default function DesignPanel({ design, updateDesign }: DesignPanelProps) 
                         Linear
                       </button>
                       <button
-                        onClick={() => updateDesign({ gradientType: 'radial' })}
+                        onClick={() => handleDesignUpdate({ gradientType: 'radial' })}
                         className={`flex-1 py-2 px-3 rounded-lg text-xs font-medium transition-all ${
                           design.gradientType === 'radial'
                             ? 'bg-white text-foreground shadow-sm'
@@ -285,7 +301,7 @@ export default function DesignPanel({ design, updateDesign }: DesignPanelProps) 
                         type="color"
                         className="w-10 h-10 p-0 border-0 rounded-lg cursor-pointer overflow-hidden"
                         value={design.gradientColor}
-                        onChange={e => updateDesign({ gradientColor: e.target.value })}
+                        onChange={e => handleDesignUpdate({ gradientColor: e.target.value })}
                       />
                       <span className="text-sm font-mono text-muted-foreground flex-1">{design.gradientColor}</span>
                     </div>
@@ -314,7 +330,7 @@ export default function DesignPanel({ design, updateDesign }: DesignPanelProps) 
             {(['square', 'rounded', 'circle', 'leaf', 'diamond'] as const).map(style => (
               <button
                 key={style}
-                onClick={() => updateDesign({ eyeFrameStyle: style })}
+                onClick={() => handleDesignUpdate({ eyeFrameStyle: style })}
                 className={`relative aspect-square rounded-xl border-2 flex items-center justify-center p-3 transition-all duration-200 group ${
                   design.eyeFrameStyle === style 
                     ? 'border-primary bg-primary/5 shadow-soft' 
@@ -347,7 +363,7 @@ export default function DesignPanel({ design, updateDesign }: DesignPanelProps) 
             {(['square', 'rounded', 'circle', 'leaf', 'diamond', 'star'] as const).map(style => (
               <button
                 key={style}
-                onClick={() => updateDesign({ eyeBallStyle: style })}
+                onClick={() => handleDesignUpdate({ eyeBallStyle: style })}
                 className={`relative aspect-square rounded-xl border-2 flex items-center justify-center p-3 transition-all duration-200 group ${
                   design.eyeBallStyle === style 
                     ? 'border-primary bg-primary/5 shadow-soft' 
@@ -376,7 +392,7 @@ export default function DesignPanel({ design, updateDesign }: DesignPanelProps) 
                   type="color" 
                   className="w-10 h-10 p-0 border-0 rounded-lg cursor-pointer overflow-hidden" 
                   value={design.eyeFrameColor || design.fgColor} 
-                  onChange={e => updateDesign({ eyeFrameColor: e.target.value })} 
+                  onChange={e => handleDesignUpdate({ eyeFrameColor: e.target.value })} 
                 />
                 <span className="text-sm font-mono text-muted-foreground">{design.eyeFrameColor || design.fgColor}</span>
               </div>
@@ -388,7 +404,7 @@ export default function DesignPanel({ design, updateDesign }: DesignPanelProps) 
                   type="color" 
                   className="w-10 h-10 p-0 border-0 rounded-lg cursor-pointer overflow-hidden" 
                   value={design.eyeBallColor || design.fgColor} 
-                  onChange={e => updateDesign({ eyeBallColor: e.target.value })} 
+                  onChange={e => handleDesignUpdate({ eyeBallColor: e.target.value })} 
                 />
                 <span className="text-sm font-mono text-muted-foreground">{design.eyeBallColor || design.fgColor}</span>
               </div>
@@ -430,7 +446,7 @@ export default function DesignPanel({ design, updateDesign }: DesignPanelProps) 
                 <Label className="text-xs font-medium text-muted-foreground">Logo Size: {design.logoSize}px</Label>
                 <Slider
                   value={[design.logoSize]}
-                  onValueChange={([v]) => updateDesign({ logoSize: v })}
+                  onValueChange={([v]) => handleDesignUpdate({ logoSize: v })}
                   min={30}
                   max={120}
                   step={5}
@@ -492,7 +508,7 @@ export default function DesignPanel({ design, updateDesign }: DesignPanelProps) 
             ]).map(({ level, desc, label, color }) => (
               <button
                 key={level}
-                onClick={() => updateDesign({ errorCorrectionLevel: level })}
+                onClick={() => handleDesignUpdate({ errorCorrectionLevel: level })}
                 className={`relative p-5 rounded-xl text-left transition-all duration-200 border-2 ${
                   design.errorCorrectionLevel === level 
                     ? 'border-primary bg-primary/5 shadow-soft' 

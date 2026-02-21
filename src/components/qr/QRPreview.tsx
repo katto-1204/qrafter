@@ -5,15 +5,37 @@ import { Download, RotateCcw, Code, QrCode, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import EmbedGenerator from './EmbedGenerator';
 import DownloadModal from './DownloadModal';
+import { toast } from '@/hooks/use-toast';
 
 interface QRPreviewProps {
   previewUrl: string;
   design: QRDesign;
   content: string;
+  isValidContent?: boolean;
+  validateContent?: (content: string) => boolean;
+  onGenerateClick?: () => void; // Callback to trigger the modal flow in parent
 }
 
-export default function QRPreview({ previewUrl, design, content }: QRPreviewProps) {
+export default function QRPreview({ previewUrl, design, content, isValidContent, validateContent }: QRPreviewProps) {
   const [isDownloadOpen, setIsDownloadOpen] = useState(false);
+
+  const handleDownloadClick = () => {
+    if (!isValidContent || !content.trim()) {
+      toast({
+        title: "⚠️ Link Required",
+        description: "Please enter a link or content first before generating.",
+        variant: "destructive",
+      });
+      return;
+    }
+    // Call the parent's handler to trigger the modal flow
+    if (onGenerateClick) {
+      onGenerateClick();
+    } else {
+      // Fallback to direct modal opening if no callback provided
+      setIsDownloadOpen(true);
+    }
+  };
 
   return (
     <div className="flex flex-col items-center gap-6 w-full">
@@ -45,7 +67,7 @@ export default function QRPreview({ previewUrl, design, content }: QRPreviewProp
                   <QrCode className="w-7 h-7 text-slate-400" />
                 </div>
                 <p className="text-muted-foreground text-sm text-center px-6 leading-relaxed">
-                  Enter content to generate your QR code
+                  Generated QR goes here
                 </p>
               </div>
             )}
@@ -56,12 +78,12 @@ export default function QRPreview({ previewUrl, design, content }: QRPreviewProp
       {/* Action Buttons */}
       <div className="w-full flex flex-col sm:flex-row items-center justify-center gap-3">
         <Button 
-          onClick={() => setIsDownloadOpen(true)} 
-          disabled={!previewUrl}
+          onClick={handleDownloadClick} 
+          disabled={!isValidContent || !content.trim()}
           className="w-full sm:w-auto bg-black text-white font-semibold gap-2 group h-11 px-6 shadow-lg hover:bg-gray-800 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Download className="w-4 h-4 group-hover:animate-bounce-gentle" />
-          Export QR
+          Generate QR
         </Button>
         <EmbedGenerator previewUrl={previewUrl} />
       </div>

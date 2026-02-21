@@ -11,19 +11,32 @@ import { Button } from '@/components/ui/button';
 import { Download, RotateCcw, Sparkles, ChevronRight, LayoutGrid, Scan, ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { toast } from '@/hooks/use-toast';
 
 export default function Generator() {
-  const { contentType, setContentType, content, setContent, design, updateDesign, resetDesign, previewUrl } = useQRCode();
+  const { contentType, setContentType, content, setContent, design, updateDesign, resetDesign, previewUrl, isValidContent, validateContent } = useQRCode();
   const [showGitHub, setShowGitHub] = useState(false);
   const [showDownload, setShowDownload] = useState(false);
 
   const handleDownloadClick = () => {
+    if (!isValidContent || !content.trim()) {
+      toast({
+        title: "⚠️ Link Required",
+        description: "Please enter a link or content first before generating.",
+        variant: "destructive",
+      });
+      return;
+    }
+    // Show the GitHub star modal first before allowing download
     setShowGitHub(true);
   };
 
   const handleGitHubContinue = () => {
     setShowGitHub(false);
-    setShowDownload(true);
+    // Only show download modal if content is valid
+    if (isValidContent && content.trim()) {
+      setShowDownload(true);
+    }
   };
 
   return (
@@ -113,7 +126,7 @@ export default function Generator() {
                 </div>
               </div>
               <div className="glass-card rounded-2xl p-6 sm:p-8">
-                <DesignPanel design={design} updateDesign={updateDesign} />
+                <DesignPanel design={design} updateDesign={updateDesign} validateContent={validateContent} content={content} />
               </div>
             </motion.section>
 
@@ -142,16 +155,19 @@ export default function Generator() {
                     previewUrl={previewUrl}
                     design={design}
                     content={content}
+                    isValidContent={isValidContent}
+                    validateContent={validateContent}
+                    onGenerateClick={handleDownloadClick}
                   />
 
                   <div className="w-full pt-6 border-t border-slate-100">
                     <Button
                       onClick={handleDownloadClick}
-                      disabled={!previewUrl}
+                      disabled={!isValidContent || !content.trim()}
                       className="w-full h-14 bg-black text-white font-bold rounded-xl shadow-lg hover:bg-gray-800 hover:scale-[1.01] transition-all duration-300 flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <Download className="w-5 h-5" />
-                      <span>Download QR</span>
+                      <span>Generate QR</span>
                       <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </Button>
                   </div>
