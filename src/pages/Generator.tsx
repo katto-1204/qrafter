@@ -108,7 +108,11 @@ export default function Generator() {
               className="glass rounded-2xl p-8 flex flex-col items-center gap-6"
             >
               <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Live Preview</h3>
-              <QRPreview previewUrl={previewUrl} design={design} />
+              <QRPreview
+                previewUrl={previewUrl}
+                design={design}
+                content={content}
+              />
               <Button
                 onClick={handleDownloadClick}
                 disabled={!previewUrl}

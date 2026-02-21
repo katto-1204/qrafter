@@ -1,125 +1,97 @@
 # Qrafted
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![React](https://img.shields.io/badge/React-20232A?style=flat&logo=react&logoColor=61DAFB)](https://reactjs.org/)
-[![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat&logo=vite&logoColor=white)](https://vitejs.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![MIT License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![React](https://img.shields.io/badge/Frontend-React-61DAFB?logo=react&logoColor=white)](https://reactjs.org/)
+[![Vite](https://img.shields.io/badge/Build-Vite-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
+[![TypeScript](https://img.shields.io/badge/Logic-TypeScript-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Styling-Tailwind_CSS-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 
-Qrafted is an advanced, open-source QR code generation platform. It provides a sophisticated suite of tools for creating high-fidelity, customizable QR codes for a wide range of applications, including digital marketing, networking, and system integration.
+![Qrafted Banner](public/IMAGES/image.png)
 
-![Project Banner](public/IMAGES/image.png)
+Qrafted is an advanced, open-source QR code generation platform designed for businesses and creators who require high-precision design control and functional versatility. Built with a focus on visual excellence and technical robustness, it provides a comprehensive suite of tools for creating, testing, and deploying custom QR codes.
 
-## Application Architecture
+## Core Capabilities
 
-The following diagram illustrates the high-level architecture and data flow within the Qrafted platform:
+### Functional Versatility
+- **Dynamic Content Support**: Standardize URLs, plain text, Wi-Fi credentials, and business contact data into scannable modules.
+- **Unified Preview Engine**: A proprietary viewer for multi-link profiles and real-time event countdowns.
+- **Smart Logic (Beta)**: Context-aware QR types including link-in-bio styles and time-sensitive redirects.
+
+### Advanced Design Architecture
+- **Geometric Module Rendering**: Support for custom module shapes including rounded vertices, circular dots, and diamond facets.
+- **Visual Effects Layer**: Native support for drop shadows, outer glows, and linear/radial gradient fills.
+- **Structural Masking**: Precise clipping masks for heart, circle, and star-shaped QR silhouettes.
+- **Logo Integration**: Seamless embedding of brand assets with adjustable error correction levels.
+
+### Enterprise-Grade Exports
+- **Format Flexibility**: High-resolution exports in PNG (with transparency support) and JPG.
+- **Batch Processing**: Scalable generation tools for creating multiple unique codes in a single operation.
+- **Developer API & Embeds**: Instant HTML code generation for seamless third-party website integration.
+
+## System Architecture
 
 ```mermaid
 graph TD
-    A[User Interface] --> B[useQRCode Hook]
-    B --> C[State Management]
-    C --> D[QR Generator Engine]
-    D --> E[Canvas Rendering]
-    E --> F[Export Module]
-    
-    subgraph Components
-    G[ContentTabs] --> C
-    H[DesignPanel] --> C
-    I[QRPreview] -- Subscribes to --> E
-    end
-    
-    subgraph Assets
-    J[SVG Export]
-    K[Raster Export PNG/JPG]
-    end
-    
-    F --> J
-    F --> K
+    A[User Interface] --> B[Design Control Engine]
+    A --> C[Content Management Layer]
+    B --> D[Custom Canvas Renderer]
+    C --> D
+    D --> E[Visual Analysis & Live Scan]
+    D --> F[Export Service]
+    F --> G[PNG/JPG/Embed Output]
 ```
 
-## System Capabilities
+## Technical Specification
 
-### Supported Content Formats
-
-| Format | Description | Implementation Details |
-| :--- | :--- | :--- |
-| **URL** | Web addresses and deep links | Direct string encoding with protocol validation |
-| **Raw Text** | Generic text or data strings | UTF-8 character support |
-| **Wi-Fi** | Network credentials | WPA/WPA2/WEP configuration strings |
-| **Email** | Predetermined email messages | mailto: protocol integration |
-| **Social Media** | Profile and content links | Optimized for platforms like LinkedIn and GitHub |
-
-### Design Parameters
-
-| Parameter | Options / Range | Impact |
-| :--- | :--- | :--- |
-| **Error Correction** | L, M, Q, H | Data redundancy vs. pattern density |
-| **Foreground Color** | Hex/RGB | Visual contrast and brand alignment |
-| **Background Color** | Hex/RGB (Translucency support) | Integration with landing page backgrounds |
-| **Pattern Style** | Square, Dot, Round | Aesthetic customization |
-| **Eye Configuration** | Inner/Outer shape control | Advanced visual branding |
+| Parameter | Specification |
+| :--- | :--- |
+| **Frontend Framework** | React 18 with Vite |
+| **Logic Layer** | TypeScript (Strict Mode) |
+| **UI Components** | Radix UI & shadcn/ui |
+| **Animation Engine** | Framer Motion |
+| **Vector Rendering** | HTML5 Canvas API |
+| **State Management** | React Hooks & TanStack Query |
 
 ## Getting Started
 
-> [!IMPORTANT]
-> Ensure your development environment meets the Node.js version requirements (LTS recommended) before installation.
+### Prerequisites
+- Node.js (version 18.0 or higher)
+- npm or yarn package manager
 
 ### Installation
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/katto-1204/qr-painter.git
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Launch the development server:
+   ```bash
+   npm run dev
+   ```
 
-1.  **Clone the Repository**:
-    ```bash
-    git clone https://github.com/yourusername/qr-painter.git
-    cd qr-painter
-    ```
+## Deployment Guide
 
-2.  **Dependency Initialization**:
-    ```bash
-    npm install
-    ```
+### Vercel / Netlify
+This project is optimized for zero-config deployment on Vercel and Netlify. Connect your repository and use the default build settings:
+- **Build Command**: `npm run build`
+- **Output Directory**: `dist`
 
-3.  **Development Execution**:
-    ```bash
-    npm run dev
-    ```
+### GitHub Pages
+To deploy to GitHub Pages, use the `gh-pages` package or the provided GitHub Actions workflow. Ensure the `base` path in `vite.config.ts` matches your repository name.
 
-### Production Deployment
+## Contributing
 
-The application is optimized for static hosting providers. To prepare the production bundle:
+We welcome contributions of all scales. To contribute:
+1. Fork the repository and create your feature branch.
+2. Adhere to the established TypeScript and Tailwind CSS conventions.
+3. Submit a pull request with a detailed description of your changes.
 
-```bash
-npm run build
-```
-
-The resulting `dist` directory can be deployed to:
-- **Vercel**: Simply connect the repository for automatic builds.
-- **Netlify**: Use `npm run build` as the build command and `dist` as the publish directory.
-- **GitHub Pages**: Utilize the specialized Vite deployment workflow.
-
-## Repository Organization
-
-```text
-src/
-├── components/
-│   ├── qr/             # Domain-specific components for QR generation logic
-│   └── ui/             # Core UI components utilizing shadcn/ui and Tailwind
-├── hooks/              # Application state and event handling (useQRCode)
-├── lib/                # Shared utilities and global configurations
-├── pages/              # Primary route components (Generator, Index)
-├── App.tsx             # Routing architecture and application wrapper
-└── main.tsx            # DOM initialization and entry point
-```
-
-## Contribution Guidelines
-
-Contributions are welcome. Please ensure that:
-1.  All new features are accompanied by appropriate technical documentation.
-2.  The formal, emoji-free documentation standard is maintained.
-3.  Code changes align with the existing TypeScript and ESLint configurations.
+> [!IMPORTANT]
+> Ensure all custom rendering logic is verified via the integrated Live Scan tool to maintain QR readability.
 
 ## License
 
-This software is released under the [MIT License](LICENSE).
-
----
-
-Technical Direction by [katto-1204](https://github.com/katto-1204)
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
