@@ -13,7 +13,6 @@ interface QRPreviewProps {
   content: string;
   isValidContent?: boolean;
   validateContent?: (content: string) => boolean;
-  onGenerateClick?: () => void; // Callback to trigger the modal flow in parent
 }
 
 export default function QRPreview({ previewUrl, design, content, isValidContent, validateContent }: QRPreviewProps) {
@@ -23,18 +22,12 @@ export default function QRPreview({ previewUrl, design, content, isValidContent,
     if (!isValidContent || !content.trim()) {
       toast({
         title: "⚠️ Link Required",
-        description: "Please enter a link or content first before generating.",
+        description: "Please enter a link or content first before downloading.",
         variant: "destructive",
       });
       return;
     }
-    // Call the parent's handler to trigger the modal flow
-    if (onGenerateClick) {
-      onGenerateClick();
-    } else {
-      // Fallback to direct modal opening if no callback provided
-      setIsDownloadOpen(true);
-    }
+    setIsDownloadOpen(true);
   };
 
   return (
@@ -79,11 +72,11 @@ export default function QRPreview({ previewUrl, design, content, isValidContent,
       <div className="w-full flex flex-col sm:flex-row items-center justify-center gap-3">
         <Button 
           onClick={handleDownloadClick} 
-          disabled={!isValidContent || !content.trim()}
+          disabled={!previewUrl}
           className="w-full sm:w-auto bg-black text-white font-semibold gap-2 group h-11 px-6 shadow-lg hover:bg-gray-800 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Download className="w-4 h-4 group-hover:animate-bounce-gentle" />
-          Generate QR
+          Export QR
         </Button>
         <EmbedGenerator previewUrl={previewUrl} />
       </div>

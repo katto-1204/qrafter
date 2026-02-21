@@ -22,21 +22,17 @@ export default function Generator() {
     if (!isValidContent || !content.trim()) {
       toast({
         title: "⚠️ Link Required",
-        description: "Please enter a link or content first before generating.",
+        description: "Please enter a link or content first before downloading.",
         variant: "destructive",
       });
       return;
     }
-    // Show the GitHub star modal first before allowing download
     setShowGitHub(true);
   };
 
   const handleGitHubContinue = () => {
     setShowGitHub(false);
-    // Only show download modal if content is valid
-    if (isValidContent && content.trim()) {
-      setShowDownload(true);
-    }
+    setShowDownload(true);
   };
 
   return (
@@ -157,17 +153,16 @@ export default function Generator() {
                     content={content}
                     isValidContent={isValidContent}
                     validateContent={validateContent}
-                    onGenerateClick={handleDownloadClick}
                   />
 
                   <div className="w-full pt-6 border-t border-slate-100">
                     <Button
                       onClick={handleDownloadClick}
-                      disabled={!isValidContent || !content.trim()}
+                      disabled={!previewUrl}
                       className="w-full h-14 bg-black text-white font-bold rounded-xl shadow-lg hover:bg-gray-800 hover:scale-[1.01] transition-all duration-300 flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <Download className="w-5 h-5" />
-                      <span>Generate QR</span>
+                      <span>Download QR</span>
                       <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </Button>
                   </div>
