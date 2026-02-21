@@ -46,7 +46,7 @@ export default function GitHubStarModal({ open, onClose, onContinue }: GitHubSta
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            href="https://github.com/qrafted/qrafted"
+            href="https://github.com/katto-1204/qrafter.git"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-center gap-3 w-full py-4 px-6 rounded-xl bg-black text-white font-semibold shadow-lg hover:bg-gray-800 hover:scale-[1.02] transition-all duration-300 group"

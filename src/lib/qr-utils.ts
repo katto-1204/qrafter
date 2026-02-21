@@ -6,6 +6,7 @@ export type QRDotStyle = 'square' | 'rounded' | 'dots' | 'diamond' | 'glitch' | 
 export type QREyeFrameStyle = 'square' | 'rounded' | 'circle' | 'leaf' | 'diamond';
 export type QREyeBallStyle = 'square' | 'rounded' | 'circle' | 'leaf' | 'diamond' | 'star';
 export type QRMaskShape = 'none' | 'circle' | 'heart' | 'star';
+export type QRFrameStyle = 'none' | 'simple' | 'rounded' | 'badge' | 'phone' | 'circle';
 
 export interface QRDesign {
   fgColor: string;
@@ -18,13 +19,19 @@ export interface QRDesign {
   maskShape: QRMaskShape;
   errorCorrectionLevel: 'L' | 'M' | 'Q' | 'H';
   logoUrl?: string;
+  logoSize: number;
   labelText: string;
   labelColor: string;
   showLabel: boolean;
-  // New features
+  // Frame options
+  frameStyle: QRFrameStyle;
+  frameColor: string;
+  frameText: string;
+  // Gradient options
   gradientEnabled: boolean;
   gradientColor: string;
   gradientType: 'linear' | 'radial';
+  // Effects
   shadowEnabled: boolean;
   shadowColor: string;
   glowEnabled: boolean;
@@ -39,13 +46,20 @@ export const defaultDesign: QRDesign = {
   eyeFrameStyle: 'square',
   eyeBallStyle: 'square',
   maskShape: 'none',
-  errorCorrectionLevel: 'M',
+  errorCorrectionLevel: 'H',
+  logoSize: 60,
   labelText: 'Scan Me!',
   labelColor: '#1e40af',
-  showLabel: true,
+  showLabel: false,
+  // Frame defaults
+  frameStyle: 'none',
+  frameColor: '#000000',
+  frameText: 'SCAN ME',
+  // Gradient defaults
   gradientEnabled: false,
-  gradientColor: '#3b82f6',
+  gradientColor: '#ef4444',
   gradientType: 'linear',
+  // Effect defaults
   shadowEnabled: false,
   shadowColor: 'rgba(0,0,0,0.2)',
   glowEnabled: false,
@@ -95,6 +109,98 @@ export const socialPlatforms = [
   { id: 'telegram', name: 'Telegram', prefix: 'https://t.me/' },
 ];
 
+/**
+ * Draw frame around QR code
+ */
+function drawFrame(
+  ctx: CanvasRenderingContext2D,
+  width: number,
+  height: number,
+  design: QRDesign
+) {
+  const frameColor = design.frameColor;
+  
+  switch (design.frameStyle) {
+    case 'simple':
+      // Simple border frame
+      ctx.fillStyle = frameColor;
+      ctx.fillRect(0, 0, width, height);
+      break;
+      
+    case 'rounded':
+      // Rounded corner frame
+      ctx.fillStyle = frameColor;
+      ctx.beginPath();
+      ctx.roundRect(0, 0, width, height, 30);
+      ctx.fill();
+      break;
+      
+    case 'badge':
+      // Badge style with text area at bottom
+      ctx.fillStyle = frameColor;
+      ctx.beginPath();
+      ctx.roundRect(0, 0, width, height, 20);
+      ctx.fill();
+      // Add text if provided
+      if (design.frameText) {
+        ctx.fillStyle = design.bgColor;
+        ctx.font = `bold ${width / 12}px 'Inter', sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.fillText(design.frameText, width / 2, height - 15);
+      }
+      break;
+      
+    case 'phone':
+      // Phone mockup style
+      ctx.fillStyle = frameColor;
+      ctx.beginPath();
+      ctx.roundRect(0, 0, width, height, 40);
+      ctx.fill();
+      // Inner bezel
+      ctx.fillStyle = '#1a1a1a';
+      ctx.beginPath();
+      ctx.roundRect(10, 10, width - 20, height - 20, 30);
+      ctx.fill();
+      // Notch
+      ctx.fillStyle = frameColor;
+      ctx.beginPath();
+      ctx.roundRect(width / 2 - 40, 15, 80, 25, 10);
+      ctx.fill();
+      break;
+      
+    case 'circle':
+      // Circular frame
+      ctx.fillStyle = frameColor;
+      ctx.beginPath();
+      ctx.arc(width / 2, width / 2, width / 2, 0, Math.PI * 2);
+      ctx.fill();
+      if (design.frameText) {
+        ctx.fillStyle = design.bgColor;
+        ctx.font = `bold ${width / 14}px 'Inter', sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.fillText(design.frameText, width / 2, height - 20);
+      }
+      break;
+      
+    default:
+      ctx.fillStyle = design.bgColor;
+      ctx.fillRect(0, 0, width, height);
+  }
+}
+
+/**
+ * Load image from URL and return as HTMLImageElement
+ */
+function loadImage(url: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = url;
+  });
+}
+
 export async function generateQRDataURL(
   content: string,
   design: QRDesign,
@@ -109,22 +215,46 @@ export async function generateQRCanvas(
   design: QRDesign,
   size: number = 600
 ): Promise<HTMLCanvasElement> {
+  // Calculate frame padding
+  const frameSize = design.frameStyle !== 'none' ? 80 : 0;
+  const qrSize = size - (frameSize * 2);
+  
   const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size + (design.frameStyle !== 'none' && design.frameText ? 40 : 0);
+  const ctx = canvas.getContext('2d')!;
+
+  // Draw frame background first
+  if (design.frameStyle !== 'none') {
+    drawFrame(ctx, size, canvas.height, design);
+  } else {
+    ctx.fillStyle = design.bgColor;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+
+  // Generate QR code
   const qr = QRCode.create(content || 'https://qrafted.app', {
     errorCorrectionLevel: design.errorCorrectionLevel,
   });
 
   const modules = qr.modules;
   const count = modules.size;
-  const moduleSize = size / count;
+  const moduleSize = qrSize / count;
+  const offsetX = frameSize;
+  const offsetY = frameSize;
 
-  canvas.width = size;
-  canvas.height = size;
-  const ctx = canvas.getContext('2d')!;
-
-  // Background
+  // QR Background within frame
   ctx.fillStyle = design.bgColor;
-  ctx.fillRect(0, 0, size, size);
+  if (design.frameStyle === 'circle') {
+    ctx.beginPath();
+    ctx.arc(size / 2, size / 2, qrSize / 2 + 10, 0, Math.PI * 2);
+    ctx.fill();
+  } else {
+    const borderRadius = design.frameStyle === 'rounded' ? 20 : 0;
+    ctx.beginPath();
+    ctx.roundRect(offsetX - 10, offsetY - 10, qrSize + 20, qrSize + 20, borderRadius);
+    ctx.fill();
+  }
 
   // Apply Mask Clip
   if (design.maskShape !== 'none') {
@@ -204,8 +334,8 @@ export async function generateQRCanvas(
       if (!modules.get(r, c)) continue;
 
       const s = moduleSize; // module size
-      const x = c * s;
-      const y = r * s;
+      const x = offsetX + c * s;
+      const y = offsetY + r * s;
 
       // Eye Detection Logic (Finder Patterns are 7x7 at corners)
       const isTopLeftEye = r < 7 && c < 7;
@@ -238,9 +368,9 @@ export async function generateQRCanvas(
       if (design.gradientEnabled) {
         let gradient;
         if (design.gradientType === 'linear') {
-          gradient = ctx.createLinearGradient(0, 0, size, size);
+          gradient = ctx.createLinearGradient(offsetX, offsetY, offsetX + qrSize, offsetY + qrSize);
         } else {
-          gradient = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+          gradient = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, qrSize / 2);
         }
         gradient.addColorStop(0, design.fgColor);
         gradient.addColorStop(1, design.gradientColor);
@@ -282,6 +412,32 @@ export async function generateQRCanvas(
           ctx.fillRect(x, y, s, s);
           break;
       }
+    }
+  }
+
+  // Reset shadow
+  ctx.shadowBlur = 0;
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 0;
+
+  // Draw logo if provided
+  if (design.logoUrl) {
+    try {
+      const logo = await loadImage(design.logoUrl);
+      const logoSizePixels = design.logoSize || 60;
+      const logoX = size / 2 - logoSizePixels / 2;
+      const logoY = size / 2 - logoSizePixels / 2;
+      
+      // Draw white background behind logo
+      ctx.fillStyle = design.bgColor;
+      ctx.beginPath();
+      ctx.roundRect(logoX - 8, logoY - 8, logoSizePixels + 16, logoSizePixels + 16, 12);
+      ctx.fill();
+      
+      // Draw logo
+      ctx.drawImage(logo, logoX, logoY, logoSizePixels, logoSizePixels);
+    } catch (e) {
+      console.error('Failed to load logo:', e);
     }
   }
 

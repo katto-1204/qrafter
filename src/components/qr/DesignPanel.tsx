@@ -1,11 +1,13 @@
-import { QRDesign, colorPalettes } from '@/lib/qr-utils';
+import { QRDesign, colorPalettes, QRFrameStyle } from '@/lib/qr-utils';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { Palette, Shapes, Shield, Type, Sparkles, RotateCcw, Frame, Image, CheckCircle2, Info } from 'lucide-react';
+import { Slider } from '@/components/ui/slider';
+import { Palette, Shapes, Shield, Type, Sparkles, RotateCcw, Frame, Image, CheckCircle2, Info, Upload, Trash2, Smartphone, Circle, Square, RectangleHorizontal } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useRef, useState } from 'react';
 
 interface DesignPanelProps {
   design: QRDesign;
@@ -13,6 +15,33 @@ interface DesignPanelProps {
 }
 
 export default function DesignPanel({ design, updateDesign }: DesignPanelProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        updateDesign({ logoUrl: ev.target?.result as string });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeLogo = () => {
+    updateDesign({ logoUrl: undefined });
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const frameStyles: { id: QRFrameStyle; label: string; icon: React.ElementType }[] = [
+    { id: 'none', label: 'None', icon: Square },
+    { id: 'simple', label: 'Simple', icon: RectangleHorizontal },
+    { id: 'rounded', label: 'Rounded', icon: RectangleHorizontal },
+    { id: 'badge', label: 'Badge', icon: RectangleHorizontal },
+    { id: 'phone', label: 'Phone', icon: Smartphone },
+    { id: 'circle', label: 'Circle', icon: Circle },
+  ];
+
   return (
     <Tabs defaultValue="shape" className="w-full">
       <TabsList className="w-full bg-slate-100 p-1.5 rounded-xl grid grid-cols-4 gap-1 h-auto">
@@ -46,18 +75,70 @@ export default function DesignPanel({ design, updateDesign }: DesignPanelProps) 
         </TabsTrigger>
       </TabsList>
 
-      <TabsContent value="frame" className="space-y-5 mt-6">
+      <TabsContent value="frame" className="space-y-6 mt-6">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="p-8 border-2 border-dashed border-slate-200 rounded-2xl text-center bg-slate-50/50"
+          className="space-y-4"
         >
-          <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center mx-auto mb-4">
-            <Frame className="w-6 h-6 text-slate-400" />
+          <Label className="text-sm font-semibold text-foreground flex items-center gap-2">
+            <Frame className="w-4 h-4 text-muted-foreground" />
+            Frame Style
+          </Label>
+          <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+            {frameStyles.map(({ id, label, icon: Icon }) => (
+              <button
+                key={id}
+                onClick={() => updateDesign({ frameStyle: id })}
+                className={`relative aspect-square rounded-xl border-2 flex flex-col items-center justify-center p-2 transition-all duration-200 group ${
+                  design.frameStyle === id
+                    ? 'border-primary bg-primary/5 shadow-soft'
+                    : 'border-slate-200 hover:border-slate-300 bg-white'
+                }`}
+              >
+                <Icon className="w-5 h-5 mb-1 text-foreground" />
+                <span className="text-[10px] font-medium text-muted-foreground">{label}</span>
+                {design.frameStyle === id && (
+                  <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                    <CheckCircle2 className="w-3 h-3 text-white" />
+                  </div>
+                )}
+              </button>
+            ))}
           </div>
-          <p className="text-muted-foreground text-sm font-medium">Frame customization coming soon</p>
-          <p className="text-muted-foreground text-xs mt-1">Standard, Phone, Scan-to-pay frames</p>
         </motion.div>
+
+        {design.frameStyle !== 'none' && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-4 pt-6 border-t border-slate-100"
+          >
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-3">
+                <Label className="text-xs font-medium text-muted-foreground">Frame Color</Label>
+                <div className="flex items-center gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                  <input
+                    type="color"
+                    className="w-10 h-10 p-0 border-0 rounded-lg cursor-pointer overflow-hidden"
+                    value={design.frameColor}
+                    onChange={e => updateDesign({ frameColor: e.target.value })}
+                  />
+                  <span className="text-sm font-mono text-muted-foreground">{design.frameColor}</span>
+                </div>
+              </div>
+              <div className="space-y-3">
+                <Label className="text-xs font-medium text-muted-foreground">Frame Text</Label>
+                <Input
+                  value={design.frameText}
+                  onChange={e => updateDesign({ frameText: e.target.value })}
+                  placeholder="SCAN ME"
+                  className="h-12 bg-slate-50 border-slate-200 rounded-xl"
+                />
+              </div>
+            </div>
+          </motion.div>
+        )}
       </TabsContent>
 
       <TabsContent value="shape" className="space-y-8 mt-6">
@@ -133,6 +214,77 @@ export default function DesignPanel({ design, updateDesign }: DesignPanelProps) 
               </div>
             </div>
           </div>
+
+          {/* Gradient Controls */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="space-y-4 pt-6 border-t border-slate-100"
+          >
+            <div className="flex items-center justify-between">
+              <Label className="text-sm font-semibold text-foreground flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-muted-foreground" />
+                Gradient Effect
+              </Label>
+              <Switch
+                checked={design.gradientEnabled}
+                onCheckedChange={v => updateDesign({ gradientEnabled: v })}
+              />
+            </div>
+            
+            {design.gradientEnabled && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-3">
+                    <Label className="text-xs font-medium text-muted-foreground">Gradient Type</Label>
+                    <div className="flex rounded-xl border border-slate-200 bg-slate-50 p-1">
+                      <button
+                        onClick={() => updateDesign({ gradientType: 'linear' })}
+                        className={`flex-1 py-2 px-3 rounded-lg text-xs font-medium transition-all ${
+                          design.gradientType === 'linear'
+                            ? 'bg-white text-foreground shadow-sm'
+                            : 'text-muted-foreground hover:text-foreground'
+                        }`}
+                      >
+                        Linear
+                      </button>
+                      <button
+                        onClick={() => updateDesign({ gradientType: 'radial' })}
+                        className={`flex-1 py-2 px-3 rounded-lg text-xs font-medium transition-all ${
+                          design.gradientType === 'radial'
+                            ? 'bg-white text-foreground shadow-sm'
+                            : 'text-muted-foreground hover:text-foreground'
+                        }`}
+                      >
+                        Radial
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <Label className="text-xs font-medium text-muted-foreground">Gradient Color</Label>
+                    <div className="flex items-center gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                      <input
+                        type="color"
+                        className="w-10 h-10 p-0 border-0 rounded-lg cursor-pointer overflow-hidden"
+                        value={design.gradientColor}
+                        onChange={e => updateDesign({ gradientColor: e.target.value })}
+                      />
+                      <span className="text-sm font-mono text-muted-foreground flex-1">{design.gradientColor}</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 flex items-start gap-3">
+                  <Info className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    Gradient effect will be applied to the QR code dots. The primary color blends into the gradient color.
+                  </p>
+                </div>
+              </div>
+            )}
+          </motion.div>
         </motion.div>
 
         <motion.div
@@ -229,17 +381,74 @@ export default function DesignPanel({ design, updateDesign }: DesignPanelProps) 
         </motion.div>
       </TabsContent>
 
-      <TabsContent value="logo" className="space-y-5 mt-6">
+      <TabsContent value="logo" className="space-y-6 mt-6">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="p-8 border-2 border-dashed border-slate-200 rounded-2xl text-center bg-slate-50/50"
+          className="space-y-4"
         >
-          <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center mx-auto mb-4">
-            <Image className="w-6 h-6 text-slate-400" />
+          <Label className="text-sm font-semibold text-foreground flex items-center gap-2">
+            <Image className="w-4 h-4 text-muted-foreground" />
+            Center Logo
+          </Label>
+          
+          {design.logoUrl ? (
+            <div className="space-y-4">
+              <div className="relative p-6 bg-slate-50 rounded-2xl border border-slate-200 flex items-center justify-center">
+                <img
+                  src={design.logoUrl}
+                  alt="Logo preview"
+                  className="w-24 h-24 object-contain rounded-xl"
+                />
+                <Button
+                  variant="destructive"
+                  size="icon"
+                  onClick={removeLogo}
+                  className="absolute top-3 right-3 h-8 w-8 rounded-lg"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </div>
+              
+              <div className="space-y-3">
+                <Label className="text-xs font-medium text-muted-foreground">Logo Size: {design.logoSize}px</Label>
+                <Slider
+                  value={[design.logoSize]}
+                  onValueChange={([v]) => updateDesign({ logoSize: v })}
+                  min={30}
+                  max={120}
+                  step={5}
+                  className="w-full"
+                />
+              </div>
+            </div>
+          ) : (
+            <div
+              onClick={() => fileInputRef.current?.click()}
+              className="p-8 border-2 border-dashed border-slate-200 rounded-2xl text-center bg-slate-50/50 cursor-pointer hover:bg-slate-100/50 hover:border-slate-300 transition-colors"
+            >
+              <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center mx-auto mb-4">
+                <Upload className="w-6 h-6 text-slate-400" />
+              </div>
+              <p className="text-foreground text-sm font-medium">Click to upload logo</p>
+              <p className="text-muted-foreground text-xs mt-1">PNG, JPG, SVG up to 2MB</p>
+            </div>
+          )}
+          
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleLogoUpload}
+            className="hidden"
+          />
+          
+          <div className="p-4 bg-amber-50 rounded-xl border border-amber-100 flex items-start gap-3">
+            <Info className="w-4 h-4 text-amber-600 mt-0.5 shrink-0" />
+            <p className="text-xs text-amber-700 leading-relaxed">
+              For best results, use error correction level "High" when adding a logo. This ensures your QR remains scannable.
+            </p>
           </div>
-          <p className="text-muted-foreground text-sm font-medium">Logo upload coming soon</p>
-          <p className="text-muted-foreground text-xs mt-1">Add your brand logo to the center</p>
         </motion.div>
       </TabsContent>
 
