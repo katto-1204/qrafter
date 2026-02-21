@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Star, ExternalLink } from 'lucide-react';
+import { Star, ExternalLink, Heart, Github, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface GitHubStarModalProps {
@@ -13,42 +13,71 @@ interface GitHubStarModalProps {
 export default function GitHubStarModal({ open, onClose, onContinue }: GitHubStarModalProps) {
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="glass-strong border-border/50 sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="text-center text-xl">
-            <span className="gradient-text">Support Qrafted</span>
-          </DialogTitle>
-          <DialogDescription className="text-center text-muted-foreground">
-            If you enjoy using Qrafted, please consider starring our GitHub repository!
-          </DialogDescription>
-        </DialogHeader>
-
-        <div className="flex flex-col items-center gap-6 py-4">
+      <DialogContent className="glass-strong border-slate-200 sm:max-w-md p-0 overflow-hidden">
+        {/* Header with gradient background */}
+        <div className="relative p-8 pb-6 text-center overflow-hidden">
+          <div className="absolute inset-0 gradient-bg opacity-5" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+          
           <motion.div
-            animate={{ scale: [1, 1.1, 1] }}
-            transition={{ repeat: Infinity, duration: 2 }}
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: 'spring', bounce: 0.4 }}
+            className="relative mb-6"
           >
-            <Star className="w-16 h-16 text-primary fill-primary/20" />
+            <div className="w-20 h-20 mx-auto rounded-2xl gradient-bg flex items-center justify-center shadow-glow">
+              <Star className="w-10 h-10 text-white fill-white/30" />
+            </div>
           </motion.div>
 
-          <a
+          <DialogHeader className="space-y-2">
+            <DialogTitle className="text-2xl font-bold">
+              <span className="gradient-text">Support Qrafted</span>
+            </DialogTitle>
+            <DialogDescription className="text-muted-foreground text-base">
+              If you enjoy using Qrafted, please consider starring our repository!
+            </DialogDescription>
+          </DialogHeader>
+        </div>
+
+        {/* Action buttons */}
+        <div className="p-6 pt-2 space-y-4">
+          <motion.a
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
             href="https://github.com/qrafted/qrafted"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 px-6 py-3 rounded-xl gradient-bg text-primary-foreground font-semibold hover:opacity-90 transition-opacity"
+            className="flex items-center justify-center gap-3 w-full py-4 px-6 rounded-xl gradient-bg text-white font-semibold shadow-glow hover:shadow-glow-lg hover:scale-[1.02] transition-all duration-300 group"
           >
-            <Star className="w-5 h-5" />
+            <Github className="w-5 h-5" />
             Star on GitHub
-            <ExternalLink className="w-4 h-4" />
-          </a>
+            <ExternalLink className="w-4 h-4 opacity-70 group-hover:opacity-100 transition-opacity" />
+          </motion.a>
 
-          <Button
-            variant="ghost"
-            onClick={onContinue}
-            className="text-muted-foreground hover:text-foreground"
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
           >
-            Continue to download →
-          </Button>
+            <Button
+              variant="ghost"
+              onClick={onContinue}
+              className="w-full text-muted-foreground hover:text-foreground group"
+            >
+              Continue to download
+              <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </motion.div>
+        </div>
+
+        {/* Footer */}
+        <div className="px-6 py-4 bg-slate-50 border-t border-slate-100">
+          <p className="text-xs text-center text-muted-foreground flex items-center justify-center gap-1.5">
+            <Heart className="w-3.5 h-3.5 text-rose-500" />
+            Made with love for the open-source community
+          </p>
         </div>
       </DialogContent>
     </Dialog>

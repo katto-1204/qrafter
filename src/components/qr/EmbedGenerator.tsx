@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Code, Copy, Check } from 'lucide-react';
+import { Code, Copy, Check, Eye } from 'lucide-react';
 import { toast } from 'sonner';
+import { motion } from 'framer-motion';
 
 interface EmbedGeneratorProps {
     previewUrl: string;
@@ -26,37 +27,68 @@ export default function EmbedGenerator({ previewUrl }: EmbedGeneratorProps) {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant="outline" size="sm" className="gap-2">
+                <Button variant="outline" className="gap-2 border-slate-200 hover:bg-slate-50 hover:border-primary/30">
                     <Code className="w-4 h-4" />
-                    Embed
+                    <span className="hidden sm:inline">Embed</span>
                 </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-lg text-left">
-                <DialogHeader>
-                    <DialogTitle>Embed QR Code</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4 py-4">
+            <DialogContent className="sm:max-w-lg glass-strong border-slate-200 p-0 overflow-hidden">
+                <div className="p-6 pb-4">
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2 text-xl font-bold">
+                            <div className="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center">
+                                <Code className="w-4 h-4 text-white" />
+                            </div>
+                            Embed QR Code
+                        </DialogTitle>
+                    </DialogHeader>
+                </div>
+
+                <div className="px-6 pb-6 space-y-5">
                     <p className="text-sm text-muted-foreground">
-                        Copy this snippet to embed your custom QR code on any website or blog.
+                        Copy this HTML snippet to embed your QR code on any website or blog.
                     </p>
+
+                    {/* Code block */}
                     <div className="relative group">
-                        <pre className="p-4 bg-secondary rounded-lg text-[10px] font-mono overflow-x-auto whitespace-pre-wrap break-all leading-relaxed border border-border max-h-[120px] overflow-y-auto">
+                        <pre className="p-4 bg-slate-900 text-slate-300 rounded-xl text-[11px] font-mono overflow-x-auto whitespace-pre-wrap break-all leading-relaxed max-h-[140px] overflow-y-auto">
                             {embedCode}
                         </pre>
                         <Button
-                            variant="secondary"
-                            className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                            size="sm"
+                            className={`absolute top-3 right-3 transition-all ${
+                                copied 
+                                    ? 'bg-emerald-500 hover:bg-emerald-500' 
+                                    : 'bg-slate-700 hover:bg-slate-600'
+                            }`}
                             onClick={handleCopy}
                         >
-                            {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                            {copied ? (
+                                <>
+                                    <Check className="w-3.5 h-3.5 mr-1.5" />
+                                    Copied!
+                                </>
+                            ) : (
+                                <>
+                                    <Copy className="w-3.5 h-3.5 mr-1.5" />
+                                    Copy
+                                </>
+                            )}
                         </Button>
                     </div>
-                    <div className="p-4 border border-primary/20 bg-primary/5 rounded-lg overflow-hidden">
-                        <h4 className="text-xs font-bold uppercase tracking-wider mb-2">Live Preview</h4>
-                        <div
-                            dangerouslySetInnerHTML={{ __html: embedCode }}
-                            className="flex justify-center max-h-[300px] overflow-auto"
-                        />
+
+                    {/* Preview */}
+                    <div className="space-y-3">
+                        <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+                            <Eye className="w-4 h-4 text-muted-foreground" />
+                            Live Preview
+                        </div>
+                        <div className="p-6 bg-slate-50 rounded-xl border border-slate-200">
+                            <div
+                                dangerouslySetInnerHTML={{ __html: embedCode }}
+                                className="flex justify-center"
+                            />
+                        </div>
                     </div>
                 </div>
             </DialogContent>
