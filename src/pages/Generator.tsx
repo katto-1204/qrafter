@@ -5,6 +5,8 @@ import DesignPanel from '@/components/qr/DesignPanel';
 import QRPreview from '@/components/qr/QRPreview';
 import GitHubStarModal from '@/components/qr/GitHubStarModal';
 import DownloadModal from '@/components/qr/DownloadModal';
+import LiveScanner from '@/components/qr/LiveScanner';
+import BatchExport from '@/components/qr/BatchExport';
 import { Button } from '@/components/ui/button';
 import { Download, RotateCcw, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -34,6 +36,9 @@ export default function Generator() {
             <span className="text-xl font-bold gradient-text">Qrafted</span>
           </Link>
           <div className="flex items-center gap-2">
+            <LiveScanner />
+            <BatchExport design={design} />
+            <div className="h-6 w-px bg-border mx-2" />
             <Button
               variant="ghost"
               size="sm"

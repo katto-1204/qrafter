@@ -1,28 +1,47 @@
 import QRCode from 'qrcode';
 
-export type QRContentType = 'url' | 'text' | 'wifi' | 'email' | 'sms' | 'call' | 'social';
+export type QRContentType = 'url' | 'text' | 'wifi' | 'email' | 'social' | 'multilink' | 'countdown';
 
 export type QRDotStyle = 'square' | 'rounded' | 'dots' | 'diamond';
+export type QRMaskShape = 'none' | 'circle' | 'heart' | 'star';
 
 export interface QRDesign {
   fgColor: string;
   bgColor: string;
   dotStyle: QRDotStyle;
+  maskShape: QRMaskShape;
   errorCorrectionLevel: 'L' | 'M' | 'Q' | 'H';
   logoUrl?: string;
   labelText: string;
   labelColor: string;
   showLabel: boolean;
+  // New features
+  gradientEnabled: boolean;
+  gradientColor: string;
+  gradientType: 'linear' | 'radial';
+  shadowEnabled: boolean;
+  shadowColor: string;
+  glowEnabled: boolean;
+  glowColor: string;
+  patternBg?: string;
 }
 
 export const defaultDesign: QRDesign = {
   fgColor: '#1e40af',
   bgColor: '#ffffff',
   dotStyle: 'square',
+  maskShape: 'none',
   errorCorrectionLevel: 'M',
   labelText: 'Scan Me!',
   labelColor: '#1e40af',
   showLabel: true,
+  gradientEnabled: false,
+  gradientColor: '#3b82f6',
+  gradientType: 'linear',
+  shadowEnabled: false,
+  shadowColor: 'rgba(0,0,0,0.2)',
+  glowEnabled: false,
+  glowColor: 'rgba(59,130,246,0.3)',
 };
 
 export const colorPalettes = [
@@ -48,6 +67,10 @@ export function buildSmsString(phone: string, message: string): string {
   return `sms:${phone}?body=${encodeURIComponent(message)}`;
 }
 
+export function buildSmsStringFromSocial(phone: string, message: string): string {
+  return `sms:${phone}?body=${encodeURIComponent(message)}`;
+}
+
 export function buildCallString(phone: string): string {
   return `tel:${phone}`;
 }
@@ -69,17 +92,8 @@ export async function generateQRDataURL(
   design: QRDesign,
   size: number = 300
 ): Promise<string> {
-  if (!content) return '';
-  
-  return QRCode.toDataURL(content, {
-    width: size,
-    margin: 2,
-    color: {
-      dark: design.fgColor,
-      light: design.bgColor,
-    },
-    errorCorrectionLevel: design.errorCorrectionLevel,
-  });
+  const canvas = await generateQRCanvas(content, design, size);
+  return canvas.toDataURL('image/png');
 }
 
 export async function generateQRCanvas(
@@ -88,42 +102,169 @@ export async function generateQRCanvas(
   size: number = 600
 ): Promise<HTMLCanvasElement> {
   const canvas = document.createElement('canvas');
-  
-  await QRCode.toCanvas(canvas, content || 'https://qrafted.app', {
-    width: size,
-    margin: 2,
-    color: {
-      dark: design.fgColor,
-      light: design.bgColor,
-    },
+  const qr = QRCode.create(content || 'https://qrafted.app', {
     errorCorrectionLevel: design.errorCorrectionLevel,
   });
+
+  const modules = qr.modules;
+  const count = modules.size;
+  const moduleSize = size / count;
+
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d')!;
+
+  // Background
+  ctx.fillStyle = design.bgColor;
+  ctx.fillRect(0, 0, size, size);
+
+  // Apply Mask Clip
+  if (design.maskShape !== 'none') {
+    ctx.beginPath();
+    const center = size / 2;
+    if (design.maskShape === 'circle') {
+      ctx.arc(center, center, size / 2, 0, Math.PI * 2);
+    } else if (design.maskShape === 'heart') {
+      const topCurveHeight = size * 0.3;
+      ctx.moveTo(center, size * 0.9);
+      ctx.bezierCurveTo(center, size * 0.8, 0, size * 0.6, 0, topCurveHeight);
+      ctx.bezierCurveTo(0, 0, center, 0, center, topCurveHeight);
+      ctx.bezierCurveTo(center, 0, size, 0, size, topCurveHeight);
+      ctx.bezierCurveTo(size, size * 0.6, center, size * 0.8, center, size * 0.9);
+    } else if (design.maskShape === 'star') {
+      const spikes = 5;
+      const outerRadius = size / 2;
+      const innerRadius = size / 4;
+      let rot = Math.PI / 2 * 3;
+      let x = center;
+      let y = center;
+      let step = Math.PI / spikes;
+
+      ctx.moveTo(center, center - outerRadius);
+      for (let i = 0; i < spikes; i++) {
+        x = center + Math.cos(rot) * outerRadius;
+        y = center + Math.sin(rot) * outerRadius;
+        ctx.lineTo(x, y);
+        rot += step;
+
+        x = center + Math.cos(rot) * innerRadius;
+        y = center + Math.sin(rot) * innerRadius;
+        ctx.lineTo(x, y);
+        rot += step;
+      }
+      ctx.lineTo(center, center - outerRadius);
+    }
+    ctx.closePath();
+    ctx.clip();
+
+    // Fill background inside clip
+    ctx.fillStyle = design.bgColor;
+    ctx.fill();
+  }
+
+  // Setup fill
+  if (design.gradientEnabled) {
+    let gradient;
+    if (design.gradientType === 'linear') {
+      gradient = ctx.createLinearGradient(0, 0, size, size);
+    } else {
+      gradient = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+    }
+    gradient.addColorStop(0, design.fgColor);
+    gradient.addColorStop(1, design.gradientColor);
+    ctx.fillStyle = gradient;
+  } else {
+    ctx.fillStyle = design.fgColor;
+  }
+
+  // Shadow/Glow effects
+  if (design.shadowEnabled) {
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = design.shadowColor;
+    ctx.shadowOffsetX = 2;
+    ctx.shadowOffsetY = 2;
+  } else if (design.glowEnabled) {
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = design.glowColor;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
+  }
+
+  for (let row = 0; row < count; row++) {
+    for (let col = 0; col < count; col++) {
+      if (modules.get(row, col)) {
+        const x = col * moduleSize;
+        const y = row * moduleSize;
+        const s = moduleSize;
+
+        switch (design.dotStyle) {
+          case 'dots':
+            ctx.beginPath();
+            ctx.arc(x + s / 2, y + s / 2, s / 2 * 0.8, 0, Math.PI * 2);
+            ctx.fill();
+            break;
+          case 'rounded':
+            ctx.beginPath();
+            const r = s * 0.3;
+            ctx.moveTo(x + r, y);
+            ctx.lineTo(x + s - r, y);
+            ctx.quadraticCurveTo(x + s, y, x + s, y + r);
+            ctx.lineTo(x + s, y + s - r);
+            ctx.quadraticCurveTo(x + s, y + s, x + s - r, y + s);
+            ctx.lineTo(x + r, y + s);
+            ctx.quadraticCurveTo(x, y + s, x, y + s - r);
+            ctx.lineTo(x, y + r);
+            ctx.quadraticCurveTo(x, y, x + r, y);
+            ctx.fill();
+            break;
+          case 'diamond':
+            ctx.beginPath();
+            ctx.moveTo(x + s / 2, y);
+            ctx.lineTo(x + s, y + s / 2);
+            ctx.lineTo(x + s / 2, y + s);
+            ctx.lineTo(x, y + s / 2);
+            ctx.closePath();
+            ctx.fill();
+            break;
+          default: // square
+            ctx.fillRect(x, y, s, s);
+            break;
+        }
+      }
+    }
+  }
 
   return canvas;
 }
 
 export function downloadQR(canvas: HTMLCanvasElement, format: string, design: QRDesign) {
   const finalCanvas = document.createElement('canvas');
-  const labelHeight = design.showLabel && design.labelText ? 40 : 0;
+  const labelHeight = design.showLabel && design.labelText ? 60 : 0;
   finalCanvas.width = canvas.width;
   finalCanvas.height = canvas.height + labelHeight;
-  
+
   const ctx = finalCanvas.getContext('2d')!;
-  ctx.fillStyle = design.bgColor;
-  ctx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
+
+  // Handle transparency for PNG
+  if (format === 'png') {
+    ctx.clearRect(0, 0, finalCanvas.width, finalCanvas.height);
+  } else {
+    ctx.fillStyle = design.bgColor;
+    ctx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
+  }
+
   ctx.drawImage(canvas, 0, 0);
 
   if (design.showLabel && design.labelText) {
     ctx.fillStyle = design.labelColor;
-    ctx.font = `bold 20px 'Space Grotesk', sans-serif`;
+    ctx.font = `bold ${Math.round(canvas.width / 15)}px 'Inter', sans-serif`;
     ctx.textAlign = 'center';
-    ctx.fillText(design.labelText, finalCanvas.width / 2, canvas.height + 28);
+    ctx.fillText(design.labelText, finalCanvas.width / 2, canvas.height + (labelHeight * 0.7));
   }
 
   let mimeType = 'image/png';
   let ext = 'png';
   if (format === 'jpg') { mimeType = 'image/jpeg'; ext = 'jpg'; }
-  if (format === 'svg') { mimeType = 'image/png'; ext = 'png'; } // fallback
 
   const link = document.createElement('a');
   link.download = `qrafted-qr.${ext}`;
