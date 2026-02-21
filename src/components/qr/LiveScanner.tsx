@@ -83,7 +83,7 @@ export default function LiveScanner() {
                                         initial={{ top: '10%' }}
                                         animate={{ top: ['10%', '85%', '10%'] }}
                                         transition={{ repeat: Infinity, duration: 2.5, ease: 'easeInOut' }}
-                                        className="absolute left-8 right-8 h-0.5 bg-blue-500 shadow-[0_0_12px_rgba(59,130,246,0.5)]"
+                                        className="absolute left-8 right-8 h-0.5 bg-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.5)]"
                                     />
                                 </div>
                             </>

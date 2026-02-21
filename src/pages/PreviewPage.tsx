@@ -65,8 +65,8 @@ export default function PreviewPage() {
                         transition={{ type: 'spring', bounce: 0.4 }}
                         className="relative"
                     >
-                        <div className="absolute inset-0 bg-gradient-to-br from-red-500 to-blue-500 rounded-full blur-xl opacity-40" />
-                        <div className="relative w-20 h-20 rounded-full bg-gradient-to-br from-red-500 to-blue-500 p-[2px] shadow-lg">
+                        <div className="absolute inset-0 bg-gradient-to-br from-red-500 to-yellow-500 rounded-full blur-xl opacity-40" />
+                        <div className="relative w-20 h-20 rounded-full bg-gradient-to-br from-red-500 to-yellow-500 p-[2px] shadow-lg">
                             <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
                                 {viewData.type === 'countdown' ? (
                                     <Timer className="w-10 h-10 text-primary" />

@@ -12,9 +12,9 @@ interface DownloadModalProps {
 }
 
 const formats = [
-  { id: 'png', label: 'PNG', icon: FileImage, desc: 'Best for web & social media', color: 'from-blue-500 to-indigo-600' },
-  { id: 'jpg', label: 'JPG', icon: Image, desc: 'Smaller file size, compressed', color: 'from-sky-500 to-blue-600' },
-  { id: 'svg', label: 'SVG', icon: FileText, desc: 'Vector format, scalable', color: 'from-red-500 to-rose-600' },
+  { id: 'png', label: 'PNG', icon: FileImage, desc: 'Best for web & social media', color: 'from-red-500 to-red-600' },
+  { id: 'jpg', label: 'JPG', icon: Image, desc: 'Smaller file size, compressed', color: 'from-yellow-500 to-amber-600' },
+  { id: 'svg', label: 'SVG', icon: FileText, desc: 'Vector format, scalable', color: 'from-orange-500 to-red-500' },
 ];
 
 export default function DownloadModal({ open, onClose, content, design }: DownloadModalProps) {

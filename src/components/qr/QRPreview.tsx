@@ -20,7 +20,7 @@ export default function QRPreview({ previewUrl, design, content }: QRPreviewProp
       {/* QR Code Display */}
       <div className="relative group w-full flex justify-center">
         {/* Glow Effect */}
-        <div className="absolute -inset-4 bg-gradient-to-br from-red-500 to-blue-500 rounded-3xl blur-2xl opacity-20 group-hover:opacity-30 transition-opacity duration-500" />
+        <div className="absolute -inset-4 bg-gradient-to-br from-red-500 to-yellow-500 rounded-3xl blur-2xl opacity-20 group-hover:opacity-30 transition-opacity duration-500" />
         
         {/* QR Container */}
         <motion.div

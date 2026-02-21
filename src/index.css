@@ -45,13 +45,13 @@
     --sidebar-border: 220 10% 88%;
     --sidebar-ring: 220 90% 56%;
 
-    /* Enhanced custom tokens - Red to Blue gradient */
-    --glow: 220 90% 56%;
+    /* Enhanced custom tokens - Red to Mustard Yellow gradient */
+    --glow: 45 100% 45%;
     --surface: 220 10% 97%;
     --surface-hover: 220 8% 94%;
-    --gradient-start: 0 85% 55%;
-    --gradient-mid: 280 70% 50%;
-    --gradient-end: 220 90% 56%;
+    --gradient-start: 0 85% 50%;
+    --gradient-mid: 25 95% 50%;
+    --gradient-end: 45 100% 50%;
     --success: 160 72% 45%;
     --warning: 38 92% 50%;
   }

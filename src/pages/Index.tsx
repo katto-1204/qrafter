@@ -8,37 +8,37 @@ const features = [
     icon: QrCode, 
     title: 'Multiple Formats', 
     desc: 'URL, Text, Wi-Fi, Email, Social Media and more',
-    gradient: 'from-red-500 to-rose-600'
+    gradient: 'from-red-500 to-red-600'
   },
   { 
     icon: Palette, 
     title: 'Full Customization', 
     desc: 'Colors, shapes, labels, and error correction levels',
-    gradient: 'from-blue-500 to-indigo-600'
+    gradient: 'from-yellow-500 to-amber-600'
   },
   { 
     icon: Download, 
     title: 'Free Downloads', 
     desc: 'PNG, JPG, and SVG exports at high resolution',
-    gradient: 'from-sky-500 to-blue-600'
+    gradient: 'from-orange-500 to-red-500'
   },
   { 
     icon: Zap, 
     title: 'Instant Preview', 
     desc: 'See changes in real-time as you design',
-    gradient: 'from-rose-500 to-red-600'
+    gradient: 'from-amber-500 to-yellow-500'
   },
   { 
     icon: Shield, 
     title: 'Error Correction', 
     desc: 'Choose reliability levels for maximum scannability',
-    gradient: 'from-indigo-500 to-blue-600'
+    gradient: 'from-red-600 to-orange-500'
   },
   { 
     icon: Globe, 
     title: 'Social Presets', 
     desc: 'Quick QR codes for all major social platforms',
-    gradient: 'from-blue-600 to-sky-500'
+    gradient: 'from-yellow-600 to-amber-500'
   },
 ];
 
