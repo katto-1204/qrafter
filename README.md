@@ -1,36 +1,36 @@
-# Qrafted 🎨
+# Qrafted
 
-**Qrafted** is a beautiful, professional, and open-source QR code generator designed for modern creators. Build stunning, fully customizable QR codes for websites, Wi-Fi, social media, and more—instantly and for free.
+Qrafted is a professional, open-source QR code generator designed for modern creators. The application enables the creation of fully customizable QR codes for websites, Wi-Fi networks, social media platforms, and more, providing an efficient and cost-free solution.
 
-![Hero Banner](https://images.unsplash.com/photo-1595079676339-1534801ad6cf?auto=format&fit=crop&q=80&w=1200&h=400)
+![Project Banner](public/IMAGES/image.png)
 
-## ✨ Features
+## Core Features
 
-- 🌈 **Full Customization**: Modify colors, patterns, and eye styles to match your brand.
-- 🖼️ **Multiple Formats**: Generate QR codes for URLs, Raw Text, Wi-Fi, Email, and major Social Media platforms.
-- ⚡ **Instant Preview**: See your design changes in real-time as you refine your QR code.
-- 💾 **High-Quality Exports**: Download your creations in PNG, JPG, or SVG formats.
-- 🛡️ **Reliability**: Adjustable error correction levels (L, M, Q, H) to ensure maximum scannability even on complex backgrounds.
-- 🌓 **Modern UI**: A sleek, responsive interface with Dark and Light mode support.
+- **Full Customization**: Modify colors, patterns, and eye styles to align with brand requirements.
+- **Support for Multiple Formats**: Generate QR codes for URLs, Raw Text, Wi-Fi, Email, and major Social Media platforms.
+- **Real-time Preview**: Observe design modifications instantly during the creation process.
+- **High-Resolution Exports**: Download generated QR codes in PNG, JPG, or SVG formats.
+- **Reliability and Scannability**: Support for adjustable error correction levels (L, M, Q, H) to ensure scanning success on diversas backgrounds.
+- **Professional Interface**: A responsive and sophisticated user interface with integrated Light and Dark mode support.
 
-## 🚀 Tech Stack
+## Technical Specifications
 
-- **Framework**: [React](https://reactjs.org/) with [Vite](https://vitejs.dev/)
-- **Language**: [TypeScript](https://www.typescriptlang.org/)
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
-- **Components**: [shadcn/ui](https://ui.shadcn.com/)
-- **Animations**: [Framer Motion](https://www.framer.com/motion/)
-- **QR Engine**: [qrcode](https://www.npmjs.com/package/qrcode)
-- **Icons**: [Lucide React](https://lucide.dev/)
+- **Framework**: React with Vite
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **Component Library**: shadcn/ui
+- **Animations**: Framer Motion
+- **QR Engine**: qrcode
+- **Iconography**: Lucide React
 
-## 🛠️ Getting Started
+## Getting Started
 
 ### Prerequisites
 
-- Node.js (v18 or higher)
-- npm, yarn, pnpm, or bun
+- Node.js (Version 18 or higher)
+- Supported package managers: npm, yarn, pnpm, or bun
 
-### Installation
+### Installation and Setup
 
 1. **Clone the repository**:
    ```bash
@@ -43,34 +43,34 @@
    npm install
    ```
 
-3. **Start the development server**:
+3. **Launch the development server**:
    ```bash
    npm run dev
    ```
 
-4. **Build for production**:
+4. **Prepare for production**:
    ```bash
    npm run build
    ```
 
-## 📂 Project Structure
+## Repository Structure
 
 ```text
 src/
 ├── components/
-│   ├── qr/             # QR-specific logic and UI components
-│   └── ui/             # Reusable shadcn/ui components
-├── hooks/              # Custom React hooks (e.g., useQRCode)
-├── lib/               # Utility functions and configurations
-├── pages/              # Application views (Index, Generator, NotFound)
-├── App.tsx             # Main application component & Routing
-└── main.tsx            # Entry point
+│   ├── qr/             # Core logic and specialized UI components for QR generation
+│   └── ui/             # Standardized reusable UI components
+├── hooks/              # Custom application-specific React hooks
+├── lib/                # Utility functions and library configurations
+├── pages/              # Application views including Generator and Index pages
+├── App.tsx             # Main routing and application core
+└── main.tsx            # Application entry point
 ```
 
-## 📄 License
+## License
 
-This project is open-source and available under the [MIT License](LICENSE).
+This project is open-source and released under the [MIT License](LICENSE).
 
 ---
 
-Built with ❤️ by [katto-1204](https://github.com/katto-1204)
+Developed by [katto-1204](https://github.com/katto-1204)
