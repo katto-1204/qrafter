@@ -1,73 +1,76 @@
-# Welcome to your Lovable project
+# Qrafted 🎨
 
-## Project info
+**Qrafted** is a beautiful, professional, and open-source QR code generator designed for modern creators. Build stunning, fully customizable QR codes for websites, Wi-Fi, social media, and more—instantly and for free.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+![Hero Banner](https://images.unsplash.com/photo-1595079676339-1534801ad6cf?auto=format&fit=crop&q=80&w=1200&h=400)
 
-## How can I edit this code?
+## ✨ Features
 
-There are several ways of editing your application.
+- 🌈 **Full Customization**: Modify colors, patterns, and eye styles to match your brand.
+- 🖼️ **Multiple Formats**: Generate QR codes for URLs, Raw Text, Wi-Fi, Email, and major Social Media platforms.
+- ⚡ **Instant Preview**: See your design changes in real-time as you refine your QR code.
+- 💾 **High-Quality Exports**: Download your creations in PNG, JPG, or SVG formats.
+- 🛡️ **Reliability**: Adjustable error correction levels (L, M, Q, H) to ensure maximum scannability even on complex backgrounds.
+- 🌓 **Modern UI**: A sleek, responsive interface with Dark and Light mode support.
 
-**Use Lovable**
+## 🚀 Tech Stack
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+- **Framework**: [React](https://reactjs.org/) with [Vite](https://vitejs.dev/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Components**: [shadcn/ui](https://ui.shadcn.com/)
+- **Animations**: [Framer Motion](https://www.framer.com/motion/)
+- **QR Engine**: [qrcode](https://www.npmjs.com/package/qrcode)
+- **Icons**: [Lucide React](https://lucide.dev/)
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🛠️ Getting Started
 
-**Use your preferred IDE**
+### Prerequisites
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- Node.js (v18 or higher)
+- npm, yarn, pnpm, or bun
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Installation
 
-Follow these steps:
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/yourusername/qr-painter.git
+   cd qr-painter
+   ```
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+3. **Start the development server**:
+   ```bash
+   npm run dev
+   ```
 
-# Step 3: Install the necessary dependencies.
-npm i
+4. **Build for production**:
+   ```bash
+   npm run build
+   ```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+## 📂 Project Structure
+
+```text
+src/
+├── components/
+│   ├── qr/             # QR-specific logic and UI components
+│   └── ui/             # Reusable shadcn/ui components
+├── hooks/              # Custom React hooks (e.g., useQRCode)
+├── lib/               # Utility functions and configurations
+├── pages/              # Application views (Index, Generator, NotFound)
+├── App.tsx             # Main application component & Routing
+└── main.tsx            # Entry point
 ```
 
-**Edit a file directly in GitHub**
+## 📄 License
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+This project is open-source and available under the [MIT License](LICENSE).
 
-**Use GitHub Codespaces**
+---
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Built with ❤️ by [katto-1204](https://github.com/katto-1204)
