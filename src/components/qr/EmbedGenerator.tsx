@@ -36,7 +36,7 @@ export default function EmbedGenerator({ previewUrl }: EmbedGeneratorProps) {
                 <div className="p-6 pb-4">
                     <DialogHeader>
                         <DialogTitle className="flex items-center gap-2 text-xl font-bold">
-                            <div className="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center">
+                            <div className="w-8 h-8 rounded-lg bg-black flex items-center justify-center">
                                 <Code className="w-4 h-4 text-white" />
                             </div>
                             Embed QR Code

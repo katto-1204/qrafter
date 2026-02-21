@@ -46,7 +46,7 @@ export default function BatchExport({ design }: BatchExportProps) {
                 <div className="p-6 pb-4">
                     <DialogHeader>
                         <DialogTitle className="flex items-center gap-2 text-xl font-bold">
-                            <div className="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center">
+                            <div className="w-8 h-8 rounded-lg bg-black flex items-center justify-center">
                                 <Files className="w-4 h-4 text-white" />
                             </div>
                             Batch QR Generation
@@ -112,7 +112,7 @@ export default function BatchExport({ design }: BatchExportProps) {
                     <Button
                         onClick={handleBatchDownload}
                         disabled={processing || validItems === 0}
-                        className="gradient-bg text-white font-semibold gap-2 shadow-glow hover:shadow-glow-lg"
+                        className="bg-black text-white font-semibold gap-2 shadow-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {processing ? (
                             <>

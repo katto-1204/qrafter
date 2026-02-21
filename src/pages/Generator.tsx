@@ -79,7 +79,7 @@ export default function Generator() {
               className="relative"
             >
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center text-white font-bold shadow-glow">
+                <div className="w-10 h-10 rounded-xl bg-black flex items-center justify-center text-white font-bold shadow-lg">
                   1
                 </div>
                 <div>
@@ -104,7 +104,7 @@ export default function Generator() {
               className="relative"
             >
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center text-white font-bold shadow-glow">
+                <div className="w-10 h-10 rounded-xl bg-black flex items-center justify-center text-white font-bold shadow-lg">
                   2
                 </div>
                 <div>
@@ -127,7 +127,7 @@ export default function Generator() {
               transition={{ delay: 0.2 }}
             >
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center text-white font-bold shadow-glow">
+                <div className="w-10 h-10 rounded-xl bg-black flex items-center justify-center text-white font-bold shadow-lg">
                   3
                 </div>
                 <div>
@@ -148,7 +148,7 @@ export default function Generator() {
                     <Button
                       onClick={handleDownloadClick}
                       disabled={!previewUrl}
-                      className="w-full h-14 gradient-bg text-white font-bold rounded-xl shadow-glow hover:shadow-glow-lg hover:scale-[1.01] transition-all duration-300 flex items-center justify-center gap-2 group"
+                      className="w-full h-14 bg-black text-white font-bold rounded-xl shadow-lg hover:bg-gray-800 hover:scale-[1.01] transition-all duration-300 flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <Download className="w-5 h-5" />
                       <span>Download QR</span>

@@ -65,8 +65,8 @@ export default function PreviewPage() {
                         transition={{ type: 'spring', bounce: 0.4 }}
                         className="relative"
                     >
-                        <div className="absolute inset-0 gradient-bg rounded-full blur-xl opacity-40" />
-                        <div className="relative w-20 h-20 rounded-full gradient-bg p-[2px] shadow-glow">
+                        <div className="absolute inset-0 bg-gradient-to-br from-red-500 to-blue-500 rounded-full blur-xl opacity-40" />
+                        <div className="relative w-20 h-20 rounded-full bg-gradient-to-br from-red-500 to-blue-500 p-[2px] shadow-lg">
                             <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
                                 {viewData.type === 'countdown' ? (
                                     <Timer className="w-10 h-10 text-primary" />
@@ -164,7 +164,7 @@ export default function PreviewPage() {
                     className="pt-8"
                 >
                     <Link to="/generator">
-                        <Button className="w-full h-12 gradient-bg text-white font-semibold shadow-glow hover:shadow-glow-lg hover:scale-[1.01] transition-all duration-300 group">
+                        <Button className="w-full h-12 bg-black text-white font-semibold shadow-lg hover:bg-gray-800 hover:scale-[1.01] transition-all duration-300 group">
                             Create Your Own QR Code
                             <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                         </Button>
@@ -179,7 +179,7 @@ export default function PreviewPage() {
                     className="pt-8 text-center"
                 >
                     <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
-                        <div className="w-5 h-5 rounded gradient-bg flex items-center justify-center">
+                        <div className="w-5 h-5 rounded bg-black flex items-center justify-center">
                             <Sparkles className="w-3 h-3 text-white" />
                         </div>
                         Created with Qrafted

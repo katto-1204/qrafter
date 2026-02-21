@@ -25,14 +25,14 @@ export default function GitHubStarModal({ open, onClose, onContinue }: GitHubSta
             transition={{ type: 'spring', bounce: 0.4 }}
             className="relative mb-6"
           >
-            <div className="w-20 h-20 mx-auto rounded-2xl gradient-bg flex items-center justify-center shadow-glow">
+            <div className="w-20 h-20 mx-auto rounded-2xl bg-black flex items-center justify-center shadow-lg">
               <Star className="w-10 h-10 text-white fill-white/30" />
             </div>
           </motion.div>
 
           <DialogHeader className="space-y-2">
             <DialogTitle className="text-2xl font-bold">
-              <span className="gradient-text">Support Qrafted</span>
+              <span className="text-foreground">Support Qrafted</span>
             </DialogTitle>
             <DialogDescription className="text-muted-foreground text-base">
               If you enjoy using Qrafted, please consider starring our repository!
@@ -49,7 +49,7 @@ export default function GitHubStarModal({ open, onClose, onContinue }: GitHubSta
             href="https://github.com/qrafted/qrafted"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center gap-3 w-full py-4 px-6 rounded-xl gradient-bg text-white font-semibold shadow-glow hover:shadow-glow-lg hover:scale-[1.02] transition-all duration-300 group"
+            className="flex items-center justify-center gap-3 w-full py-4 px-6 rounded-xl bg-black text-white font-semibold shadow-lg hover:bg-gray-800 hover:scale-[1.02] transition-all duration-300 group"
           >
             <Github className="w-5 h-5" />
             Star on GitHub

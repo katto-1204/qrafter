@@ -8,37 +8,37 @@ const features = [
     icon: QrCode, 
     title: 'Multiple Formats', 
     desc: 'URL, Text, Wi-Fi, Email, Social Media and more',
-    gradient: 'from-violet-500 to-purple-600'
+    gradient: 'from-red-500 to-rose-600'
   },
   { 
     icon: Palette, 
     title: 'Full Customization', 
     desc: 'Colors, shapes, labels, and error correction levels',
-    gradient: 'from-pink-500 to-rose-600'
+    gradient: 'from-blue-500 to-indigo-600'
   },
   { 
     icon: Download, 
     title: 'Free Downloads', 
     desc: 'PNG, JPG, and SVG exports at high resolution',
-    gradient: 'from-blue-500 to-cyan-600'
+    gradient: 'from-sky-500 to-blue-600'
   },
   { 
     icon: Zap, 
     title: 'Instant Preview', 
     desc: 'See changes in real-time as you design',
-    gradient: 'from-amber-500 to-orange-600'
+    gradient: 'from-rose-500 to-red-600'
   },
   { 
     icon: Shield, 
     title: 'Error Correction', 
     desc: 'Choose reliability levels for maximum scannability',
-    gradient: 'from-emerald-500 to-teal-600'
+    gradient: 'from-indigo-500 to-blue-600'
   },
   { 
     icon: Globe, 
     title: 'Social Presets', 
     desc: 'Quick QR codes for all major social platforms',
-    gradient: 'from-indigo-500 to-violet-600'
+    gradient: 'from-blue-600 to-sky-500'
   },
 ];
 
@@ -68,7 +68,7 @@ export default function Index() {
             <span className="text-xl font-bold text-foreground">Qrafted</span>
           </Link>
           <Link to="/generator">
-            <Button className="gradient-bg text-white font-semibold px-5 shadow-glow hover:shadow-glow-lg hover:scale-[1.02] transition-all duration-300">
+            <Button className="bg-black text-white font-semibold px-5 shadow-lg hover:bg-gray-800 hover:scale-[1.02] transition-all duration-300">
               Create QR Code
               <ArrowRight className="w-4 h-4 ml-1" />
             </Button>
@@ -107,7 +107,7 @@ export default function Index() {
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
                 <Link to="/generator">
-                  <Button size="lg" className="gradient-bg text-white font-bold text-lg px-8 h-14 shadow-glow hover:shadow-glow-lg hover:scale-[1.02] transition-all duration-300 group">
+                  <Button size="lg" className="bg-black text-white font-bold text-lg px-8 h-14 shadow-lg hover:bg-gray-800 hover:scale-[1.02] transition-all duration-300 group">
                     <QrCode className="w-5 h-5 mr-2" />
                     Start Creating
                     <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
@@ -218,7 +218,7 @@ export default function Index() {
                 Start generating custom QR codes in seconds. It's free, fast, and beautiful.
               </p>
               <Link to="/generator">
-                <Button size="lg" className="gradient-bg text-white font-bold text-lg px-10 h-14 shadow-glow hover:shadow-glow-lg hover:scale-[1.02] transition-all duration-300 group">
+                <Button size="lg" className="bg-black text-white font-bold text-lg px-10 h-14 shadow-lg hover:bg-gray-800 hover:scale-[1.02] transition-all duration-300 group">
                   Generate Your QR Code
                   <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
                 </Button>

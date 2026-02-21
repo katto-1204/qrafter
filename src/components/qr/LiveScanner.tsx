@@ -58,7 +58,7 @@ export default function LiveScanner() {
                 <div className="p-6 pb-4">
                     <DialogHeader>
                         <DialogTitle className="flex items-center gap-2 text-xl font-bold">
-                            <div className="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center">
+                            <div className="w-8 h-8 rounded-lg bg-black flex items-center justify-center">
                                 <Scan className="w-4 h-4 text-white" />
                             </div>
                             Live QR Tester
@@ -83,7 +83,7 @@ export default function LiveScanner() {
                                         initial={{ top: '10%' }}
                                         animate={{ top: ['10%', '85%', '10%'] }}
                                         transition={{ repeat: Infinity, duration: 2.5, ease: 'easeInOut' }}
-                                        className="absolute left-8 right-8 h-0.5 bg-primary shadow-[0_0_12px_rgba(139,92,246,0.5)]"
+                                        className="absolute left-8 right-8 h-0.5 bg-blue-500 shadow-[0_0_12px_rgba(59,130,246,0.5)]"
                                     />
                                 </div>
                             </>
@@ -93,7 +93,7 @@ export default function LiveScanner() {
                                     <Camera className="w-8 h-8 text-slate-500" />
                                 </div>
                                 <p className="text-slate-400 text-sm mb-6 leading-relaxed">Point your camera at a QR code to verify it scans correctly</p>
-                                <Button onClick={startScanning} className="gradient-bg text-white font-semibold gap-2 shadow-glow">
+                                <Button onClick={startScanning} className="bg-black text-white font-semibold gap-2 shadow-lg hover:bg-gray-800">
                                     <Play className="w-4 h-4" />
                                     Start Camera
                                 </Button>

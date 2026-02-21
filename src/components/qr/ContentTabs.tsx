@@ -9,12 +9,12 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const contentTypes: { id: QRContentType; label: string; icon: React.ElementType; color: string }[] = [
-  { id: 'url', label: 'Website', icon: Globe, color: 'from-blue-500 to-cyan-500' },
-  { id: 'text', label: 'Text', icon: Type, color: 'from-slate-500 to-slate-600' },
-  { id: 'wifi', label: 'Wi-Fi', icon: Wifi, color: 'from-violet-500 to-purple-600' },
-  { id: 'email', label: 'Email', icon: Mail, color: 'from-rose-500 to-pink-600' },
-  { id: 'social', label: 'Social', icon: Share2, color: 'from-amber-500 to-orange-600' },
-  { id: 'multilink', label: 'Multi-Link', icon: Layers, color: 'from-emerald-500 to-teal-600' },
+  { id: 'url', label: 'Website', icon: Globe, color: 'from-blue-500 to-indigo-600' },
+  { id: 'text', label: 'Text', icon: Type, color: 'from-slate-600 to-gray-700' },
+  { id: 'wifi', label: 'Wi-Fi', icon: Wifi, color: 'from-sky-500 to-blue-600' },
+  { id: 'email', label: 'Email', icon: Mail, color: 'from-red-500 to-rose-600' },
+  { id: 'social', label: 'Social', icon: Share2, color: 'from-rose-500 to-red-600' },
+  { id: 'multilink', label: 'Multi-Link', icon: Layers, color: 'from-indigo-500 to-blue-600' },
 ];
 
 interface ContentTabsProps {
@@ -167,8 +167,8 @@ export default function ContentTabs({ contentType, setContentType, setContent }:
 
           {contentType === 'wifi' && (
             <div className="space-y-4">
-              <div className="p-4 bg-violet-50 rounded-xl border border-violet-100">
-                <p className="text-sm text-violet-700 font-medium">Scanning this QR will auto-connect devices to your Wi-Fi</p>
+              <div className="p-4 bg-blue-50 rounded-xl border border-blue-100">
+                <p className="text-sm text-blue-700 font-medium">Scanning this QR will auto-connect devices to your Wi-Fi</p>
               </div>
               <div className="space-y-3">
                 <Label className="text-sm font-medium text-foreground flex items-center gap-2">

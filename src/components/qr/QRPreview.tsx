@@ -20,7 +20,7 @@ export default function QRPreview({ previewUrl, design, content }: QRPreviewProp
       {/* QR Code Display */}
       <div className="relative group w-full flex justify-center">
         {/* Glow Effect */}
-        <div className="absolute -inset-4 gradient-bg rounded-3xl blur-2xl opacity-20 group-hover:opacity-30 transition-opacity duration-500" />
+        <div className="absolute -inset-4 bg-gradient-to-br from-red-500 to-blue-500 rounded-3xl blur-2xl opacity-20 group-hover:opacity-30 transition-opacity duration-500" />
         
         {/* QR Container */}
         <motion.div
@@ -58,7 +58,7 @@ export default function QRPreview({ previewUrl, design, content }: QRPreviewProp
         <Button 
           onClick={() => setIsDownloadOpen(true)} 
           disabled={!previewUrl}
-          className="w-full sm:w-auto gradient-bg text-white font-semibold gap-2 group h-11 px-6 shadow-glow hover:shadow-glow-lg transition-all duration-300"
+          className="w-full sm:w-auto bg-black text-white font-semibold gap-2 group h-11 px-6 shadow-lg hover:bg-gray-800 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Download className="w-4 h-4 group-hover:animate-bounce-gentle" />
           Export QR

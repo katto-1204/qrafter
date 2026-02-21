@@ -49,7 +49,7 @@ const NotFound = () => {
         {/* Actions */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link to="/">
-            <Button className="gradient-bg text-white font-semibold gap-2 shadow-glow hover:shadow-glow-lg hover:scale-[1.02] transition-all duration-300 h-12 px-6">
+            <Button className="bg-black text-white font-semibold gap-2 shadow-lg hover:bg-gray-800 hover:scale-[1.02] transition-all duration-300 h-12 px-6">
               <Home className="w-4 h-4" />
               Go Home
             </Button>
